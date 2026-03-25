@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>UE5 Color Workstation v5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 全局 1.2 倍放大 */
+        :root { font-size: 19.2px; } 
+        body { -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        
+        /* 移除数字输入框箭头 */
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        /* 彩色色相滑块 */
+        .slider-hue {
+            -webkit-appearance: none; width: 100%; height: 16px; border-radius: 8px;
+            background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00) !important;
+            outline: none; cursor: pointer;
+        }
+        .slider-hue::-webkit-slider-thumb { 
+            -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; 
+            background: #fff; border: 3px solid #1e293b; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .slider-hue::-moz-range-thumb { 
+            width: 24px; height: 24px; border-radius: 50%; 
+            background: #fff; border: 3px solid #1e293b; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* 透明度滑块渲染 - 修复样式 */
+        .slider-alpha {
+            -webkit-appearance: none; width: 100%; height: 16px; border-radius: 8px;
+            outline: none; cursor: pointer;
+            background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                            linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+                            linear-gradient(45deg, transparent 75%, #ccc 75%), 
+                            linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 10px 10px; background-position: 0 0, 0 5px, 5px 5px, 5px 0;
+            position: relative;
+        }
+        
+        .slider-alpha::-webkit-slider-thumb { 
+            -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; 
+            background: #fff; border: 3px solid #1e293b; position: relative; z-index: 10; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .slider-alpha::-moz-range-thumb { 
+            width: 24px; height: 24px; border-radius: 50%; 
+            background: #fff; border: 3px solid #1e293b; position: relative; z-index: 10; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slider-alpha-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+            border-radius: 8px; overflow: hidden; pointer-events: none;
+        }
+
+        /* 色盘 SV Box */
+        #sv-box { 
+            background: linear-gradient(to bottom, transparent, #000), 
+                        linear-gradient(to right, #fff, transparent); 
+            cursor: crosshair; touch-action: none; 
+        }
+        .checkerboard { 
+            background-image: linear-gradient(45deg, #ddd 25%, transparent 25%), 
+                            linear-gradient(-45deg, #ddd 25%, transparent 25%), 
+                            linear-gradient(45deg, transparent 75%, #ddd 75%), 
+                            linear-gradient(-45deg, transparent 75%, #ddd 75%); 
+            background-size: 12px 12px; 
+        }
+        
+        .copy-success { color: #10b981 !important; stroke: #10b981 !important; }
+        .card-title { font-size: 1.1rem; font-weight: 900; letter-spacing: -0.02em; }
+        
+        /* 输入框验证样式 */
+        .input-invalid { 
+            border-color: #f87171 !important; 
+            background-color: #fef2f2 !important;
+        }
+        .input-valid { 
+            border-color: #10b981 !important;
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            :root { font-size: 16px; }
+            .grid { gap: 0.5rem; }
+            .p-5 { padding: 1rem; }
+            .p-4 { padding: 0.75rem; }
+            .p-3 { padding: 0.5rem; }
+            .p-2 { padding: 0.5rem; }
+            .space-y-4 > * + * { margin-top: 0.75rem; }
+            .space-y-3 > * + * { margin-top: 0.5rem; }
+            .space-y-2 > * + * { margin-top: 0.5rem; }
+            .rounded-\[1\.5rem\] { border-radius: 1rem; }
+            .rounded-2xl { border-radius: 1rem; }
+            .rounded-xl { border-radius: 0.75rem; }
+            .rounded-lg { border-radius: 0.5rem; }
+            
+            #sv-box { height: 250px; }
+        }
+        
+        /* 复选框样式 */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .checkbox-input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        /* 确保左右两侧高度一致 */
+        .left-panel {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .color-picker-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sv-box-container {
+            flex: 1;
+            min-height: 280px;
+        }
+        
+        /* 输入框样式 */
+        .color-input {
+            transition: all 0.2s ease;
+        }
+        
+        .color-input:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen p-3 text-slate-800 font-sans">
+
+    <div class="max-w-6xl mx-auto space-y-4">
+        
+        <div class="flex justify-between items-center px-2">
+            <h1 class="text-sm font-black text-slate-300 uppercase tracking-widest leading-none">UE5 Color Workspace 5.0</h1>
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-medium text-slate-600">语言</span>
+                <select id="lang-select" class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                    <option value="zh">中文</option>
+                    <option value="en">English</option>
+                    <option value="ja">日本語</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="ru">Русский</option>
+                    <option value="ko">한국어</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            
+            <!-- 左边栏 - 使用flex确保高度 -->
+            <div class="lg:col-span-5 left-panel bg-white p-5 rounded-[1.5rem] shadow-sm border border-slate-200">
+                <div class="color-picker-container space-y-4">
+                    <div class="space-y-2">
+                        <h2 data-i18n="selected_color" class="text-xl font-black text-slate-800">当前选中颜色</h2>
+                        <div class="w-full h-16 rounded-xl shadow-inner border border-slate-100 checkerboard overflow-hidden">
+                            <div id="preview-color" class="w-full h-full"></div>
+                        </div>
+                    </div>
+
+                    <div class="sv-box-container">
+                        <div id="sv-box" class="relative w-full h-full rounded-xl overflow-hidden border border-slate-100 shadow-inner" style="background-color: #ff0000;">
+                            <div id="sv-cursor" class="absolute w-5 h-5 border-2 border-white rounded-full shadow-md -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span data-i18n="hue" class="text-lg font-bold text-slate-700">色相</span>
+                                <span id="label-h" class="text-xs font-mono font-bold bg-slate-100 px-2 rounded">0°</span>
+                            </div>
+                            <input type="range" id="input-hue" min="0" max="360" value="0" class="slider-hue">
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span data-i18n="alpha" class="text-lg font-bold text-slate-700">透明度</span>
+                                <span id="label-a" class="text-xs font-mono font-bold bg-slate-100 px-2 rounded">100%</span>
+                            </div>
+                            <div class="relative">
+                                <div id="alpha-gradient-bg" class="slider-alpha-bg"></div>
+                                <input type="range" id="input-alpha" min="0" max="100" value="100" class="slider-alpha relative z-10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右边栏 - 使用grid布局 -->
+            <div class="lg:col-span-7 grid grid-rows-[auto_1fr] gap-3 h-full">
+                <!-- Linear Color -->
+                <div class="bg-slate-900 p-4 rounded-2xl shadow-lg space-y-3 text-white">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-1">
+                        <span data-i18n="linear_color" class="card-title text-slate-400">Linear Color</span>
+                        <button onclick="copy('linear')" class="hover:text-white transition-transform active:scale-90">
+                            <svg class="w-5 h-5" id="icon-linear" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center">
+                            <span class="text-[10px] font-black text-red-500 block">LR</span>
+                            <input type="number" id="val-lr" step="0.000001" min="0" max="1" class="color-input bg-transparent font-mono text-sm w-full text-center outline-none">
+                        </div>
+                        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center">
+                            <span class="text-[10px] font-black text-green-500 block">LG</span>
+                            <input type="number" id="val-lg" step="0.000001" min="0" max="1" class="color-input bg-transparent font-mono text-sm w-full text-center outline-none">
+                        </div>
+                        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center">
+                            <span class="text-[10px] font-black text-blue-500 block">LB</span>
+                            <input type="number" id="val-lb" step="0.000001" min="0" max="1" class="color-input bg-transparent font-mono text-sm w-full text-center outline-none">
+                        </div>
+                        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center">
+                            <span class="text-[10px] font-black text-slate-400 block">LA</span>
+                            <input type="number" id="val-la" step="0.000001" min="0" max="1" class="color-input bg-transparent font-mono text-sm w-full text-center outline-none">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 下面四行卡片 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <!-- RGB -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex justify-between items-center border-b pb-1">
+                            <span data-i18n="rgb" class="card-title text-slate-800">RGB</span>
+                            <button onclick="copy('srgb')" class="text-slate-300 hover:text-blue-500 active:scale-90">
+                                <svg class="w-5 h-5" id="icon-srgb" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2">
+                            <input type="number" id="val-r" min="0" max="255" class="color-input bg-slate-50 border border-slate-100 rounded-lg p-1 text-center font-mono font-bold text-sm text-red-500">
+                            <input type="number" id="val-g" min="0" max="255" class="color-input bg-slate-50 border border-slate-100 rounded-lg p-1 text-center font-mono font-bold text-sm text-green-500">
+                            <input type="number" id="val-b" min="0" max="255" class="color-input bg-slate-50 border border-slate-100 rounded-lg p-1 text-center font-mono font-bold text-sm text-blue-500">
+                            <div class="flex items-center justify-center bg-slate-50 border border-slate-100 rounded-lg p-1 text-xs font-mono font-bold text-slate-400">
+                                <input type="number" id="val-a-perc" min="0" max="100" class="color-input bg-transparent w-8 text-right outline-none">%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HEX -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex justify-between items-center border-b pb-1">
+                            <div class="flex items-center gap-2">
+                                <span data-i18n="hex" class="card-title text-slate-800">HEX</span>
+                                <div class="checkbox-container">
+                                    <input type="checkbox" id="hex-hash-checkbox" class="checkbox-input" checked>
+                                    <label for="hex-hash-checkbox" data-i18n="include_hash" class="text-xs text-slate-500">#</label>
+                                </div>
+                            </div>
+                            <button onclick="copy('hex')" class="text-slate-300 hover:text-blue-500 active:scale-90">
+                                <svg class="w-5 h-5" id="icon-hex" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="val-hex" pattern="^#?[0-9A-Fa-f]{6}$" data-i18n-placeholder="hex_placeholder" class="color-input w-full bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 font-mono font-bold text-lg uppercase outline-none text-center">
+                            <input type="text" id="val-hex-alpha" pattern="^#?[0-9A-Fa-f]{8}$" data-i18n-placeholder="hex_alpha_placeholder" class="color-input w-full bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 font-mono font-bold text-lg uppercase outline-none text-center">
+                        </div>
+                    </div>
+
+                    <!-- HSL -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex justify-between items-center border-b pb-1">
+                            <span data-i18n="hsl" class="card-title text-slate-800">HSL</span>
+                            <button onclick="copy('hsl')" class="text-slate-300 hover:text-blue-500 active:scale-90">
+                                <svg class="w-5 h-5" id="icon-hsl" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-5 gap-2">
+                            <input type="number" id="val-hh" min="0" max="360" class="color-input bg-slate-50 rounded-lg p-1 text-center font-mono text-sm">
+                            <input type="number" id="val-hs" min="0" max="100" class="color-input bg-slate-50 rounded-lg p-1 text-center font-mono text-sm">
+                            <input type="number" id="val-hl" min="0" max="100" class="color-input bg-slate-50 rounded-lg p-1 text-center font-mono text-sm">
+                            <div class="flex items-center justify-center bg-slate-50 border border-slate-100 rounded-lg p-1 text-xs font-mono font-bold text-slate-400">
+                                <input type="number" id="val-h-a" min="0" max="100" class="color-input bg-transparent w-8 text-right outline-none">%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HSV -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex justify-between items-center border-b pb-1">
+                            <span data-i18n="hsv" class="card-title text-slate-800">HSV</span>
+                            <button onclick="copy('hsv')" class="text-slate-300 hover:text-blue-500 active:scale-90">
+                                <svg class="w-5 h-5" id="icon-hsv" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-5 gap-2">
+                            <input type="number" id="val-vh" min="0" max="360" class="color-input bg-slate-50 rounded-lg p-1 text-center font-mono text-sm">
+                            <input type="number" id="val-vs" min="0" max="100" class="color-input bg-slate-50 rounded-lg p-1 text-center font-mono text-sm">
+                            <input type="number" id="val-vv" min="0" max="100" class="color-input bg-slate-50 rounded-lg p-1 text-center font-mono text-sm">
+                            <div class="flex items-center justify-center bg-slate-50 border border-slate-100 rounded-lg p-1 text-xs font-mono font-bold text-slate-400">
+                                <input type="number" id="val-v-a" min="0" max="100" class="color-input bg-transparent w-8 text-right outline-none">%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 多语言数据 ---
+        const i18n = {
+            zh: { 
+                selected_color: "当前选中颜色", 
+                hue: "色相", 
+                alpha: "透明度",
+                linear_color: "Linear Color",
+                rgb: "RGB",
+                hex: "HEX",
+                hsl: "HSL",
+                hsv: "HSV",
+                include_hash: "#",
+                hex_placeholder: "RRGGBB",
+                hex_alpha_placeholder: "RRGGBBAA"
+            },
+            en: { 
+                selected_color: "Selected Color", 
+                hue: "Hue", 
+                alpha: "Alpha",
+                linear_color: "Linear Color",
+                rgb: "RGB",
+                hex: "HEX",
+                hsl: "HSL",
+                hsv: "HSV",
+                include_hash: "#",
+                hex_placeholder: "RRGGBB",
+                hex_alpha_placeholder: "RRGGBBAA"
+            },
+            ja: { 
+                selected_color: "選択中の色", 
+                hue: "色相", 
+                alpha: "不透明度",
+                linear_color: "リニアカラー",
+                rgb: "RGB",
+                hex: "HEX",
+                hsl: "HSL",
+                hsv: "HSV",
+                include_hash: "#",
+                hex_placeholder: "RRGGBB",
+                hex_alpha_placeholder: "RRGGBBAA"
+            },
+            es: { 
+                selected_color: "Color Seleccionado", 
+                hue: "Matiz", 
+                alpha: "Alfa",
+                linear_color: "Color Lineal",
+                rgb: "RGB",
+                hex: "HEX",
+                hsl: "HSL",
+                hsv: "HSV",
+                include_hash: "#",
+                hex_placeholder: "RRGGBB",
+                hex_alpha_placeholder: "RRGGBBAA"
+            },
+            fr: { 
+                selected_color: "Couleur Sélectionnée", 
+                hue: "Teinte", 
+                alpha: "Alpha",
+                linear_color: "Couleur Linéaire",
+                rgb: "RGB",
+                hex: "HEX",
+                hsl: "HSL",
+                hsv: "HSV",
+                include_hash: "#",
+                hex_placeholder: "RRGGBB",
+                hex_alpha_placeholder: "RRGGBBAA"
+            },
+            de: { 
+                selected_color: "Ausgewählte Farbe", 
+                hue: "Farbton", 
+                alpha: "Alpha",
+                linear_color: "Lineare Farbe",
+                rgb: "RGB",
+                hex: "HEX",
+                hsl: "HSL",
+                hsv: "HSV",
+                include_hash: "#",
+                hex_placeholder: "RRGGBB",
+                hex_alpha_placeholder: "RRGGBBAA"
+            },
+            ru: { 
+                selected_color: "Выбранный Цвет", 
+                hue: "Оттенок", 
+                alpha: "Альфа",
+                linear_color: "Линейный Цвет",
+                rgb: "RGB",
+                hex: "HEX",
+                hsl: "HSL",
+                hsv: "HSV",
+                include_hash: "#",
+                hex_placeholder: "RRGGBB",
+                hex_alpha_placeholder: "RRGGBBAA"
+            },
+            ko: { 
+                selected_color: "선택된 색상", 
+                hue: "색조", 
+                alpha: "알파",
+                linear_color: "선형 색상",
+                rgb: "RGB",
+                hex: "HEX",
+                hsl: "HSL",
+                hsv: "HSV",
+                include_hash: "#",
+                hex_placeholder: "RRGGBB",
+                hex_alpha_placeholder: "RRGGBBAA"
+            }
+        };
+
+        const langSelect = document.getElementById('lang-select');
+        function setLanguage(lang) {
+            // 设置文本内容
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key]) {
+                    el.innerText = i18n[lang][key];
+                }
+            });
+            
+            // 设置placeholder文本
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (i18n[lang] && i18n[lang][key]) {
+                    el.placeholder = i18n[lang][key];
+                }
+            });
+        }
+        langSelect.addEventListener('change', (e) => setLanguage(e.target.value));
+
+        // --- 核心变量 ---
+        let currH = 147, currS = 72, currV = 83, currA = 1.0; // 使用图片中的默认颜色
+        let hexWithHash = true; // 默认包含#号
+
+        const dom = {
+            svBox: document.getElementById('sv-box'), svCursor: document.getElementById('sv-cursor'),
+            hueSlide: document.getElementById('input-hue'), alphaSlide: document.getElementById('input-alpha'),
+            alphaGradBg: document.getElementById('alpha-gradient-bg'),
+            preview: document.getElementById('preview-color'), 
+            hexInput: document.getElementById('val-hex'),
+            hexAlphaInput: document.getElementById('val-hex-alpha'),
+            hexHashCheckbox: document.getElementById('hex-hash-checkbox')
+        };
+
+        // --- 数学公式 ---
+        const s2l = (s) => s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+        const l2s = (l) => l <= 0.0031308 ? l * 12.92 : 1.055 * Math.pow(l, 1 / 2.4) - 0.055;
+        
+        const hsv2rgb = (h, s, v) => {
+            s /= 100; v /= 100;
+            const f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+            return [Math.round(f(5) * 255), Math.round(f(3) * 255), Math.round(f(1) * 255)];
+        };
+        
+        const rgb2hsv = (r, g, b) => {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+            let h, s = max === 0 ? 0 : d / max, v = max;
+            if (d === 0) h = 0; else {
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [h * 360, s * 100, v * 100];
+        };
+        
+        const rgb2hsl = (r, g, b) => {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            
+            if(max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch(max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [h * 360, s * 100, l * 100];
+        };
+        
+        const hsl2rgb = (h, s, l) => {
+            h /= 360; s /= 100; l /= 100;
+            
+            if(s === 0) {
+                return [l * 255, l * 255, l * 255];
+            }
+            
+            const hue2rgb = (p, q, t) => {
+                if(t < 0) t += 1;
+                if(t > 1) t -= 1;
+                if(t < 1/6) return p + (q - p) * 6 * t;
+                if(t < 1/2) return q;
+                if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                return p;
+            };
+            
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            
+            const r = hue2rgb(p, q, h + 1/3);
+            const g = hue2rgb(p, q, h);
+            const b = hue2rgb(p, q, h - 1/3);
+            
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        };
+
+        // --- 输入验证函数 ---
+        function validateRGB(value, min, max) {
+            const strValue = String(value).trim();
+            
+            // 检查长度
+            if (strValue.length === 0 || strValue.length > 3) {
+                return { isValid: false, value: min };
+            }
+            
+            const num = parseInt(strValue);
+            if (isNaN(num)) {
+                return { isValid: false, value: min };
+            }
+            
+            if (num < min || num > max) {
+                return { isValid: false, value: Math.max(min, Math.min(max, num)) };
+            }
+            
+            return { isValid: true, value: num };
+        }
+        
+        function validateLinear(value, min, max) {
+            const strValue = String(value).trim();
+            
+            // 检查长度
+            if (strValue.length === 0) {
+                return { isValid: false, value: min };
+            }
+            
+            const num = parseFloat(strValue);
+            if (isNaN(num)) {
+                return { isValid: false, value: min };
+            }
+            
+            if (num < min || num > max) {
+                return { isValid: false, value: Math.max(min, Math.min(max, parseFloat(num.toFixed(6)))) };
+            }
+            
+            return { isValid: true, value: parseFloat(num.toFixed(6)) };
+        }
+        
+        function validatePercentage(value) {
+            const strValue = String(value).trim();
+            
+            // 检查长度
+            if (strValue.length === 0 || strValue.length > 3) {
+                return { isValid: false, value: 0 };
+            }
+            
+            const num = parseInt(strValue);
+            if (isNaN(num)) {
+                return { isValid: false, value: 0 };
+            }
+            
+            if (num < 0 || num > 100) {
+                return { isValid: false, value: Math.max(0, Math.min(100, num)) };
+            }
+            
+            return { isValid: true, value: num };
+        }
+        
+        function validateHue(value) {
+            const strValue = String(value).trim();
+            
+            // 检查长度
+            if (strValue.length === 0 || strValue.length > 3) {
+                return { isValid: false, value: 0 };
+            }
+            
+            const num = parseInt(strValue);
+            if (isNaN(num)) {
+                return { isValid: false, value: 0 };
+            }
+            
+            // 确保在0-359范围内
+            const hue = ((num % 360) + 360) % 360;
+            return { isValid: true, value: hue };
+        }
+        
+        function validateHEX(value) {
+            const hex = value.replace('#', '');
+            
+            // 检查长度
+            if (hex.length !== 6 && hex.length !== 8) {
+                return { isValid: false, value: null };
+            }
+            
+            if (/^[0-9A-Fa-f]{6,8}$/.test(hex)) {
+                return { isValid: true, value: hex.toUpperCase() };
+            }
+            
+            return { isValid: false, value: null };
+        }
+        
+        function hexToRgb(hex) {
+            hex = hex.replace('#', '');
+            if (hex.length === 3) {
+                hex = hex.split('').map(c => c + c).join('');
+            }
+            
+            if (hex.length === 6) {
+                return [
+                    parseInt(hex.substring(0, 2), 16),
+                    parseInt(hex.substring(2, 4), 16),
+                    parseInt(hex.substring(4, 6), 16)
+                ];
+            } else if (hex.length === 8) {
+                return [
+                    parseInt(hex.substring(0, 2), 16),
+                    parseInt(hex.substring(2, 4), 16),
+                    parseInt(hex.substring(4, 6), 16),
+                    parseInt(hex.substring(6, 8), 16) / 255
+                ];
+            }
+            return [0, 0, 0, 1];
+        }
+        
+        function rgbToHex(r, g, b, withHash = true) {
+            const hex = r.toString(16).padStart(2, '0') + 
+                       g.toString(16).padStart(2, '0') + 
+                       b.toString(16).padStart(2, '0');
+            return withHash ? '#' + hex : hex;
+        }
+        
+        function rgbToHexWithAlpha(r, g, b, a, withHash = true) {
+            const alpha = Math.round(a * 255);
+            const hex = r.toString(16).padStart(2, '0') + 
+                       g.toString(16).padStart(2, '0') + 
+                       b.toString(16).padStart(2, '0') + 
+                       alpha.toString(16).padStart(2, '0');
+            return withHash ? '#' + hex : hex;
+        }
+
+        // --- 输入框验证和样式更新 ---
+        function validateInput(input, validationFn) {
+            const result = validationFn(input.value);
+            
+            if (result.isValid) {
+                input.classList.remove('input-invalid');
+                input.classList.add('input-valid');
+                // 短暂显示验证成功样式
+                setTimeout(() => {
+                    input.classList.remove('input-valid');
+                }, 1000);
+            } else {
+                input.classList.add('input-invalid');
+                input.classList.remove('input-valid');
+                // 如果值无效但可修正，则修正值
+                if (result.value !== null && result.value !== undefined) {
+                    input.value = result.value;
+                }
+            }
+            
+            return result;
+        }
+
+        // --- 更新HEX显示格式 ---
+        function updateHexFormat() {
+            const [r, g, b] = hsv2rgb(currH, currS, currV);
+            const hex = rgbToHex(r, g, b, hexWithHash);
+            const hexAlpha = rgbToHexWithAlpha(r, g, b, currA, hexWithHash);
+            
+            if (dom.hexInput.value !== hex) {
+                dom.hexInput.value = hex;
+            }
+            if (dom.hexAlphaInput.value !== hexAlpha) {
+                dom.hexAlphaInput.value = hexAlpha;
+            }
+        }
+
+        // --- UI 更新 ---
+        function update(source) {
+            const [r, g, b] = hsv2rgb(currH, currS, currV);
+            const hex = rgbToHex(r, g, b, hexWithHash);
+            const hexAlpha = rgbToHexWithAlpha(r, g, b, currA, hexWithHash);
+            const aPerc = Math.round(currA * 100);
+            
+            // 计算HSL值
+            const [hslH, hslS, hslL] = rgb2hsl(r, g, b);
+
+            // 更新SV盒背景色和光标位置
+            dom.svBox.style.backgroundColor = `hsl(${currH}, 100%, 50%)`;
+            dom.svCursor.style.left = `${currS}%`;
+            dom.svCursor.style.top = `${100 - currV}%`;
+
+            if(source !== 'slide') {
+                dom.hueSlide.value = currH;
+                dom.alphaSlide.value = aPerc;
+            }
+            
+            document.getElementById('label-h').innerText = `${Math.round(currH)}°`;
+            document.getElementById('label-a').innerText = `${aPerc}%`;
+            
+            // 更新透明度滑块背景
+            const alphaBg = dom.alphaGradBg;
+            alphaBg.style.background = `linear-gradient(to right, 
+                rgba(${r}, ${g}, ${b}, 0) 0%, 
+                rgba(${r}, ${g}, ${b}, 1) 100%)`;
+
+            // 更新RGB输入框
+            if(source !== 'srgb') {
+                document.getElementById('val-r').value = r;
+                document.getElementById('val-g').value = g;
+                document.getElementById('val-b').value = b;
+                document.getElementById('val-a-perc').value = aPerc;
+            }
+
+            // 更新HEX输入框
+            if(source !== 'hex') {
+                dom.hexInput.value = hex;
+                dom.hexAlphaInput.value = hexAlpha;
+            }
+
+            // 更新LINEAR输入框 - 改为小数点后6位
+            if(source !== 'linear') {
+                document.getElementById('val-lr').value = parseFloat(s2l(r/255).toFixed(6));
+                document.getElementById('val-lg').value = parseFloat(s2l(g/255).toFixed(6));
+                document.getElementById('val-lb').value = parseFloat(s2l(b/255).toFixed(6));
+                document.getElementById('val-la').value = parseFloat(currA.toFixed(6));
+            }
+
+            // 更新HSL输入框
+            if(source !== 'hsl') {
+                document.getElementById('val-hh').value = Math.round(hslH);
+                document.getElementById('val-hs').value = Math.round(hslS);
+                document.getElementById('val-hl').value = Math.round(hslL);
+                document.getElementById('val-h-a').value = aPerc;
+            }
+
+            // 更新HSV输入框
+            if(source !== 'hsv') {
+                document.getElementById('val-vh').value = Math.round(currH);
+                document.getElementById('val-vs').value = Math.round(currS);
+                document.getElementById('val-vv').value = Math.round(currV);
+                document.getElementById('val-v-a').value = aPerc;
+            }
+
+            // 更新预览颜色
+            dom.preview.style.backgroundColor = `rgba(${r},${g},${b},${currA})`;
+        }
+
+        // --- 从其他颜色格式更新 ---
+        function updateFromRGB() {
+            const rResult = validateInput(document.getElementById('val-r'), (v) => validateRGB(v, 0, 255));
+            const gResult = validateInput(document.getElementById('val-g'), (v) => validateRGB(v, 0, 255));
+            const bResult = validateInput(document.getElementById('val-b'), (v) => validateRGB(v, 0, 255));
+            const aResult = validateInput(document.getElementById('val-a-perc'), validatePercentage);
+            
+            if (rResult.isValid && gResult.isValid && bResult.isValid && aResult.isValid) {
+                [currH, currS, currV] = rgb2hsv(rResult.value, gResult.value, bResult.value);
+                currA = aResult.value / 100;
+                update('srgb');
+            }
+        }
+
+        function updateFromHSL() {
+            const hResult = validateInput(document.getElementById('val-hh'), validateHue);
+            const sResult = validateInput(document.getElementById('val-hs'), validatePercentage);
+            const lResult = validateInput(document.getElementById('val-hl'), validatePercentage);
+            const aResult = validateInput(document.getElementById('val-h-a'), validatePercentage);
+            
+            if (hResult.isValid && sResult.isValid && lResult.isValid && aResult.isValid) {
+                const [r, g, b] = hsl2rgb(hResult.value, sResult.value, lResult.value);
+                [currH, currS, currV] = rgb2hsv(r, g, b);
+                currA = aResult.value / 100;
+                update('hsl');
+            }
+        }
+
+        function updateFromHSV() {
+            const hResult = validateInput(document.getElementById('val-vh'), validateHue);
+            const sResult = validateInput(document.getElementById('val-vs'), validatePercentage);
+            const vResult = validateInput(document.getElementById('val-vv'), validatePercentage);
+            const aResult = validateInput(document.getElementById('val-v-a'), validatePercentage);
+            
+            if (hResult.isValid && sResult.isValid && vResult.isValid && aResult.isValid) {
+                currH = hResult.value;
+                currS = sResult.value;
+                currV = vResult.value;
+                currA = aResult.value / 100;
+                update('hsv');
+            }
+        }
+
+        function updateFromHEX() {
+            const hexValue = dom.hexInput.value || dom.hexAlphaInput.value;
+            const result = validateHEX(hexValue);
+            
+            if (result.isValid) {
+                const [r, g, b, a] = hexToRgb(hexValue);
+                
+                [currH, currS, currV] = rgb2hsv(r, g, b);
+                if (a !== undefined) {
+                    currA = a;
+                }
+                update('hex');
+                
+                // 验证通过，移除错误样式
+                dom.hexInput.classList.remove('input-invalid');
+                dom.hexAlphaInput.classList.remove('input-invalid');
+            } else {
+                // 如果HEX无效，添加错误样式
+                if (dom.hexInput.value) {
+                    dom.hexInput.classList.add('input-invalid');
+                }
+                if (dom.hexAlphaInput.value) {
+                    dom.hexAlphaInput.classList.add('input-invalid');
+                }
+            }
+        }
+
+        function updateFromLinear() {
+            const lrResult = validateInput(document.getElementById('val-lr'), (v) => validateLinear(v, 0, 1));
+            const lgResult = validateInput(document.getElementById('val-lg'), (v) => validateLinear(v, 0, 1));
+            const lbResult = validateInput(document.getElementById('val-lb'), (v) => validateLinear(v, 0, 1));
+            const laResult = validateInput(document.getElementById('val-la'), (v) => validateLinear(v, 0, 1));
+            
+            if (lrResult.isValid && lgResult.isValid && lbResult.isValid && laResult.isValid) {
+                const r = Math.round(l2s(lrResult.value) * 255);
+                const g = Math.round(l2s(lgResult.value) * 255);
+                const b = Math.round(l2s(lbResult.value) * 255);
+                
+                [currH, currS, currV] = rgb2hsv(r, g, b);
+                currA = laResult.value;
+                update('linear');
+            }
+        }
+
+        // --- 交互逻辑 ---
+        function moveSV(e) {
+            e.preventDefault();
+            const rect = dom.svBox.getBoundingClientRect();
+            let x, y;
+            
+            if (e.type.includes('touch')) {
+                x = e.touches[0].clientX - rect.left;
+                y = e.touches[0].clientY - rect.top;
+            } else {
+                x = e.clientX - rect.left;
+                y = e.clientY - rect.top;
+            }
+            
+            currS = Math.min(100, Math.max(0, (x / rect.width) * 100));
+            currV = Math.min(100, Math.max(0, 100 - (y / rect.height) * 100));
+            update('sv');
+        }
+
+        // 鼠标事件
+        dom.svBox.addEventListener('mousedown', (e) => {
+            moveSV(e);
+            const mm = (ev) => moveSV(ev);
+            const mu = () => { 
+                window.removeEventListener('mousemove', mm); 
+                window.removeEventListener('mouseup', mu); 
+            };
+            window.addEventListener('mousemove', mm); 
+            window.addEventListener('mouseup', mu);
+        });
+
+        // 触摸事件 - 移动端优化
+        dom.svBox.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                e.preventDefault();
+                moveSV(e);
+            }
+        }, { passive: false });
+
+        dom.svBox.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 1) {
+                e.preventDefault();
+                moveSV(e);
+            }
+        }, { passive: false });
+
+        dom.hueSlide.addEventListener('input', (e) => { 
+            currH = parseFloat(e.target.value); 
+            update('slide'); 
+        });
+        
+        dom.alphaSlide.addEventListener('input', (e) => { 
+            currA = parseFloat(e.target.value) / 100; 
+            update('slide'); 
+        });
+
+        // HEX是否包含#号复选框事件
+        dom.hexHashCheckbox.addEventListener('change', (e) => {
+            hexWithHash = e.target.checked;
+            updateHexFormat();
+        });
+
+        // 为所有输入框添加事件监听
+        const rgbInputs = ['val-r', 'val-g', 'val-b', 'val-a-perc'];
+        rgbInputs.forEach(id => {
+            const input = document.getElementById(id);
+            input.addEventListener('change', updateFromRGB);
+            input.addEventListener('blur', updateFromRGB);
+            input.addEventListener('input', function(e) {
+                validateInput(this, (v) => {
+                    if (id === 'val-a-perc') {
+                        return validatePercentage(v);
+                    } else {
+                        return validateRGB(v, 0, 255);
+                    }
+                });
+            });
+        });
+
+        const hslInputs = ['val-hh', 'val-hs', 'val-hl', 'val-h-a'];
+        hslInputs.forEach(id => {
+            const input = document.getElementById(id);
+            input.addEventListener('change', updateFromHSL);
+            input.addEventListener('blur', updateFromHSL);
+            input.addEventListener('input', function(e) {
+                validateInput(this, (v) => {
+                    if (id === 'val-hh') {
+                        return validateHue(v);
+                    } else {
+                        return validatePercentage(v);
+                    }
+                });
+            });
+        });
+
+        const hsvInputs = ['val-vh', 'val-vs', 'val-vv', 'val-v-a'];
+        hsvInputs.forEach(id => {
+            const input = document.getElementById(id);
+            input.addEventListener('change', updateFromHSV);
+            input.addEventListener('blur', updateFromHSV);
+            input.addEventListener('input', function(e) {
+                validateInput(this, (v) => {
+                    if (id === 'val-vh') {
+                        return validateHue(v);
+                    } else {
+                        return validatePercentage(v);
+                    }
+                });
+            });
+        });
+
+        dom.hexInput.addEventListener('change', updateFromHEX);
+        dom.hexInput.addEventListener('blur', updateFromHEX);
+        dom.hexAlphaInput.addEventListener('change', updateFromHEX);
+        dom.hexAlphaInput.addEventListener('blur', updateFromHEX);
+
+        const linearInputs = ['val-lr', 'val-lg', 'val-lb', 'val-la'];
+        linearInputs.forEach(id => {
+            const input = document.getElementById(id);
+            input.addEventListener('change', updateFromLinear);
+            input.addEventListener('blur', updateFromLinear);
+            input.addEventListener('input', function(e) {
+                validateInput(this, (v) => validateLinear(v, 0, 1));
+            });
+        });
+
+        // 添加键盘事件，按Enter键也触发更新
+        document.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.target.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+
+        async function copy(type) {
+            let t = "";
+            const [r, g, b] = hsv2rgb(currH, currS, currV);
+            const aPerc = Math.round(currA * 100);
+            
+            switch(type) {
+                case 'hex':
+                    t = currA === 1.0 ? dom.hexInput.value : dom.hexAlphaInput.value;
+                    break;
+                case 'linear':
+                    t = `(R=${document.getElementById('val-lr').value}, G=${document.getElementById('val-lg').value}, B=${document.getElementById('val-lb').value}, A=${document.getElementById('val-la').value})`;
+                    break;
+                case 'srgb':
+                    t = currA === 1.0 ? 
+                        `rgb(${document.getElementById('val-r').value}, ${document.getElementById('val-g').value}, ${document.getElementById('val-b').value})` :
+                        `rgba(${document.getElementById('val-r').value}, ${document.getElementById('val-g').value}, ${document.getElementById('val-b').value}, ${currA.toFixed(2)})`;
+                    break;
+                case 'hsl':
+                    t = currA === 1.0 ?
+                        `hsl(${document.getElementById('val-hh').value}, ${document.getElementById('val-hs').value}%, ${document.getElementById('val-hl').value}%)` :
+                        `hsla(${document.getElementById('val-hh').value}, ${document.getElementById('val-hs').value}%, ${document.getElementById('val-hl').value}%, ${currA.toFixed(2)})`;
+                    break;
+                case 'hsv':
+                    t = currA === 1.0 ?
+                        `hsv(${document.getElementById('val-vh').value}, ${document.getElementById('val-vs').value}%, ${document.getElementById('val-vv').value}%)` :
+                        `hsva(${document.getElementById('val-vh').value}, ${document.getElementById('val-vs').value}%, ${document.getElementById('val-vv').value}%, ${currA.toFixed(2)})`;
+                    break;
+            }
+            try {
+                await navigator.clipboard.writeText(t);
+                const icon = document.getElementById(`icon-${type}`);
+                if (icon) {
+                    icon.classList.add('copy-success');
+                    setTimeout(() => icon.classList.remove('copy-success'), 1200);
+                }
+            } catch(err) {
+                console.error('复制失败:', err);
+                // 降级方案
+                const textArea = document.createElement('textarea');
+                textArea.value = t;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+        }
+
+        // 初始化
+        const sysLang = navigator.language.split('-')[0];
+        const defaultLang = i18n[sysLang] ? sysLang : 'en';
+        langSelect.value = defaultLang;
+        setLanguage(defaultLang);
+        
+        // 初始化颜色值为图片中的颜色
+        update();
+    </script>
+</body>
+</html>
