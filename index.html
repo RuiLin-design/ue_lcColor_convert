@@ -1,37 +1,68 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
+     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3374799630888227"
+     crossorigin="anonymous">
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9RDEMD2Q8L"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9RDEMD2Q8L');
+    </script>
     
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3374799630888227"
-     crossorigin="anonymous"></script>
-
-        <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9RDEMD2Q8L"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-9RDEMD2Q8L');
-</script>
+    
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">   
+    
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <title>UE5 Color Workstation | Pro Unreal Engine Color Converter</title>
-    <meta name="description" content="Professional color converter for UE5. High-precision Linear, sRGB, HEX, HSL, HSV conversion with auto-validation.">
+    <title>UE5 Color Converter | Linear to sRGB, HEX & HSV Tool</title>
     
+    <meta name="description" content="Free professional UE5 color converter. Translate high-precision Linear Color (Gamma 2.2), sRGB, HEX, HSL, and HSV values seamlessly for Unreal Engine UI and materials.">
+    
+    <meta name="keywords" content="UE5 color converter, Unreal Engine linear color, sRGB to Linear, Unreal Engine HEX color, UI material color tool, Gamma 2.2">
+    <meta name="author" content="UE5 UI Developer">
+    <meta name="robots" content="index, follow">
+    
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    <meta property="og:title" content="UE5 Color Converter | Linear, sRGB & HEX Tool">
+    <meta property="og:description" content="Professional color converter for Unreal Engine 5. Translate Linear Color, sRGB, HEX, HSL, and HSV values.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="UE5 Color Converter Tool">
+    <meta name="twitter:description" content="Must-have color workflow tool for Unreal Engine UI and Material developers.">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "UE5 Color Converter",
+      "description": "A high-precision color converter tool for Unreal Engine developers to translate between Linear, sRGB, HEX, HSL, and HSV formats.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { font-size: 19.2px; } 
         body { -webkit-tap-highlight-color: transparent; overflow-x: hidden; background-color: #f8fafc; transition: direction 0.3s ease; }
         
-        /* Input styling: Remove spin buttons */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
-        /* Large Sliders (24px height, 32px thumb) */
         .slider-hue {
             -webkit-appearance: none; width: 100%; height: 24px; border-radius: 12px;
             background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00) !important;
@@ -92,14 +123,14 @@
 </head>
 <body class="p-2 text-slate-800 font-sans">
 
-    <div class="max-w-6xl mx-auto space-y-3">
+    <main class="max-w-6xl mx-auto space-y-3">
         
         <header class="flex justify-between items-center px-2">
             <h1 class="text-[11px] font-black text-slate-300 uppercase tracking-[0.25em] leading-none">UE5 Color Workspace 6.1</h1>
             
             <div class="lang-dropdown" id="lang-dropdown">
-                <button class="lang-btn" id="lang-btn">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+                <button class="lang-btn" id="lang-btn" aria-label="Select Language">
+                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                     <span id="current-lang-text">Detecting...</span>
                 </button>
                 <div class="lang-options">
@@ -139,7 +170,7 @@
                             <span data-i18n="hue" class="text-xs font-black text-slate-500 uppercase tracking-tighter">Hue</span>
                             <span id="label-h" class="text-xs font-mono font-black bg-blue-50 text-blue-600 px-3 py-1 rounded-full border border-blue-100 shadow-sm">0°</span>
                         </div>
-                        <input type="range" id="input-hue" min="0" max="360" value="0" class="slider-hue">
+                        <input type="range" id="input-hue" min="0" max="360" value="0" class="slider-hue" aria-label="Hue Slider">
                     </div>
                     <div class="space-y-2">
                         <div class="flex justify-between items-center px-1">
@@ -148,7 +179,7 @@
                         </div>
                         <div class="relative">
                             <div id="alpha-gradient-bg" class="slider-alpha-bg" style="position: absolute; top:0; left:0; width:100%; height:24px; border-radius:12px;"></div>
-                            <input type="range" id="input-alpha" min="0" max="100" value="100" class="slider-alpha relative z-10">
+                            <input type="range" id="input-alpha" min="0" max="100" value="100" class="slider-alpha relative z-10" aria-label="Alpha Slider">
                         </div>
                     </div>
                 </div>
@@ -166,23 +197,23 @@
                 <div class="bg-slate-900 p-5 rounded-[2rem] shadow-xl text-white">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
                         <span data-i18n="linear_color" class="text-[10px] font-black text-slate-500 tracking-[0.2em] uppercase">Linear Color (Gamma 2.2)</span>
-                        <button onclick="copy('linear')" class="text-slate-500 hover:text-white transition-colors"><svg class="w-5 h-5" id="icon-linear" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button>
+                        <button onclick="copy('linear')" aria-label="Copy Linear Color" class="text-slate-500 hover:text-white transition-colors"><svg class="w-5 h-5" id="icon-linear" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button>
                     </div>
                     <div class="grid grid-cols-4 gap-3">
                         <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700">
-                            <span class="text-[9px] font-black text-red-500 block mb-1">LR</span>
+                            <label for="val-lr" class="text-[9px] font-black text-red-500 block mb-1">LR</label>
                             <input type="number" id="val-lr" step="0.000001" class="bg-transparent w-full font-mono text-sm outline-none text-center">
                         </div>
                         <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700">
-                            <span class="text-[9px] font-black text-green-500 block mb-1">LG</span>
+                            <label for="val-lg" class="text-[9px] font-black text-green-500 block mb-1">LG</label>
                             <input type="number" id="val-lg" step="0.000001" class="bg-transparent w-full font-mono text-sm outline-none text-center">
                         </div>
                         <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700">
-                            <span class="text-[9px] font-black text-blue-500 block mb-1">LB</span>
+                            <label for="val-lb" class="text-[9px] font-black text-blue-500 block mb-1">LB</label>
                             <input type="number" id="val-lb" step="0.000001" class="bg-transparent w-full font-mono text-sm outline-none text-center">
                         </div>
                         <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700">
-                            <span class="text-[9px] font-black text-slate-500 block mb-1">LA</span>
+                            <label for="val-la" class="text-[9px] font-black text-slate-500 block mb-1">LA</label>
                             <input type="number" id="val-la" step="0.000001" class="bg-transparent w-full font-mono text-sm outline-none text-center">
                         </div>
                     </div>
@@ -190,12 +221,12 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div class="bg-white p-4 rounded-[1.8rem] border border-slate-200 shadow-sm space-y-3">
-                        <div class="flex justify-between items-center"><span data-i18n="rgb" class="text-[24px] font-black text-slate-400">RGB</span><button onclick="copy('srgb')" class="text-slate-300 hover:text-blue-500"><svg class="w-4 h-4" id="icon-srgb" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button></div>
+                        <div class="flex justify-between items-center"><span data-i18n="rgb" class="text-[24px] font-black text-slate-400">RGB</span><button aria-label="Copy RGB" onclick="copy('srgb')" class="text-slate-300 hover:text-blue-500"><svg class="w-4 h-4" id="icon-srgb" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button></div>
                         <div class="grid grid-cols-4 gap-1.5">
-                            <input type="number" id="val-r" class="bg-slate-50 border rounded-lg p-2 text-center font-mono text-xs text-red-500">
-                            <input type="number" id="val-g" class="bg-slate-50 border rounded-lg p-2 text-center font-mono text-xs text-green-500">
-                            <input type="number" id="val-b" class="bg-slate-50 border rounded-lg p-2 text-center font-mono text-xs text-blue-500">
-                            <div class="bg-slate-50 border rounded-lg p-2 text-[9px] flex items-center justify-center font-bold text-slate-400"><input type="number" id="val-a-perc" class="w-6 bg-transparent text-end outline-none">%</div>
+                            <input type="number" id="val-r" aria-label="RGB Red" class="bg-slate-50 border rounded-lg p-2 text-center font-mono text-xs text-red-500">
+                            <input type="number" id="val-g" aria-label="RGB Green" class="bg-slate-50 border rounded-lg p-2 text-center font-mono text-xs text-green-500">
+                            <input type="number" id="val-b" aria-label="RGB Blue" class="bg-slate-50 border rounded-lg p-2 text-center font-mono text-xs text-blue-500">
+                            <div class="bg-slate-50 border rounded-lg p-2 text-[9px] flex items-center justify-center font-bold text-slate-400"><input type="number" id="val-a-perc" aria-label="Alpha Percentage" class="w-6 bg-transparent text-end outline-none">%</div>
                         </div>
                     </div>
 
@@ -210,43 +241,43 @@
                                     <button id="opt-hex-lower" class="px-3 py-1 rounded-md text-[10px] font-black lowercase transition-all">abc</button>
                                 </div>
                             </div>
-                            <button onclick="copy('hex')" class="text-slate-300 hover:text-blue-500"><svg class="w-4 h-4" id="icon-hex" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button>
+                            <button onclick="copy('hex')" aria-label="Copy HEX" class="text-slate-300 hover:text-blue-500"><svg class="w-4 h-4" id="icon-hex" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
-                            <input type="text" id="val-hex" class="bg-slate-50 border rounded-xl p-2 text-center font-mono text-sm outline-none">
-                            <input type="text" id="val-hex-alpha" class="bg-slate-50 border rounded-xl p-2 text-center font-mono text-sm outline-none">
+                            <input type="text" id="val-hex" aria-label="HEX Color" class="bg-slate-50 border rounded-xl p-2 text-center font-mono text-sm outline-none">
+                            <input type="text" id="val-hex-alpha" aria-label="HEX Color with Alpha" class="bg-slate-50 border rounded-xl p-2 text-center font-mono text-sm outline-none">
                         </div>
                     </div>
 
                     <div class="bg-white p-4 rounded-[1.8rem] border border-slate-200 shadow-sm space-y-3">
-                        <div class="flex justify-between items-center"><span data-i18n="hsl" class="text-[24px] font-black text-slate-400">HSL</span><button onclick="copy('hsl')" class="text-slate-300 hover:text-blue-500"><svg class="w-4 h-4" id="icon-hsl" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button></div>
+                        <div class="flex justify-between items-center"><span data-i18n="hsl" class="text-[24px] font-black text-slate-400">HSL</span><button aria-label="Copy HSL" onclick="copy('hsl')" class="text-slate-300 hover:text-blue-500"><svg class="w-4 h-4" id="icon-hsl" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button></div>
                         <div class="grid grid-cols-4 gap-2">
-                            <input type="number" id="val-hh" class="bg-slate-50 border rounded-lg p-2 text-center font-mono text-xs">
+                            <input type="number" id="val-hh" aria-label="HSL Hue" class="bg-slate-50 border rounded-lg p-2 text-center font-mono text-xs">
                             <div class="flex items-center bg-slate-50 border rounded-lg px-2 shadow-inner">
-                                <input type="number" id="val-hs" class="bg-transparent w-full text-center font-mono text-xs outline-none">
+                                <input type="number" id="val-hs" aria-label="HSL Saturation" class="bg-transparent w-full text-center font-mono text-xs outline-none">
                                 <span class="text-[10px] font-bold text-slate-400">%</span>
                             </div>
                             <div class="flex items-center bg-slate-50 border rounded-lg px-2 shadow-inner">
-                                <input type="number" id="val-hl" class="bg-transparent w-full text-center font-mono text-xs outline-none">
+                                <input type="number" id="val-hl" aria-label="HSL Lightness" class="bg-transparent w-full text-center font-mono text-xs outline-none">
                                 <span class="text-[10px] font-bold text-slate-400">%</span>
                             </div>
-                            <div class="bg-slate-50 border rounded-lg p-2 text-[9px] flex items-center justify-center font-bold text-slate-400"><input type="number" id="val-h-a" class="w-6 bg-transparent text-end outline-none">%</div>
+                            <div class="bg-slate-50 border rounded-lg p-2 text-[9px] flex items-center justify-center font-bold text-slate-400"><input type="number" id="val-h-a" aria-label="HSL Alpha" class="w-6 bg-transparent text-end outline-none">%</div>
                         </div>
                     </div>
 
                     <div class="bg-white p-4 rounded-[1.8rem] border border-slate-200 shadow-sm space-y-3">
-                        <div class="flex justify-between items-center"><span data-i18n="hsv" class="text-[24px] font-black text-slate-400">HSV</span><button onclick="copy('hsv')" class="text-slate-300 hover:text-blue-500"><svg class="w-4 h-4" id="icon-hsv" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button></div>
+                        <div class="flex justify-between items-center"><span data-i18n="hsv" class="text-[24px] font-black text-slate-400">HSV</span><button aria-label="Copy HSV" onclick="copy('hsv')" class="text-slate-300 hover:text-blue-500"><svg class="w-4 h-4" id="icon-hsv" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button></div>
                         <div class="grid grid-cols-4 gap-2">
-                            <input type="number" id="val-vh" class="bg-slate-50 border rounded-lg p-2 text-center font-mono text-xs">
+                            <input type="number" id="val-vh" aria-label="HSV Hue" class="bg-slate-50 border rounded-lg p-2 text-center font-mono text-xs">
                             <div class="flex items-center bg-slate-50 border rounded-lg px-2 shadow-inner">
-                                <input type="number" id="val-vs" class="bg-transparent w-full text-center font-mono text-xs outline-none">
+                                <input type="number" id="val-vs" aria-label="HSV Saturation" class="bg-transparent w-full text-center font-mono text-xs outline-none">
                                 <span class="text-[10px] font-bold text-slate-400">%</span>
                             </div>
                             <div class="flex items-center bg-slate-50 border rounded-lg px-2 shadow-inner">
-                                <input type="number" id="val-vv" class="bg-transparent w-full text-center font-mono text-xs outline-none">
+                                <input type="number" id="val-vv" aria-label="HSV Value" class="bg-transparent w-full text-center font-mono text-xs outline-none">
                                 <span class="text-[10px] font-bold text-slate-400">%</span>
                             </div>
-                            <div class="bg-slate-50 border rounded-lg p-2 text-[9px] flex items-center justify-center font-bold text-slate-400"><input type="number" id="val-v-a" class="w-6 bg-transparent text-end outline-none">%</div>
+                            <div class="bg-slate-50 border rounded-lg p-2 text-[9px] flex items-center justify-center font-bold text-slate-400"><input type="number" id="val-v-a" aria-label="HSV Alpha" class="w-6 bg-transparent text-end outline-none">%</div>
                         </div>
                     </div>
                 </div>
@@ -256,7 +287,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
         /**
@@ -416,10 +447,8 @@
         }
 
         function updateOptionUI() {
-            // Hash Toggle
             if(hexPrefs.hash) { dom.hexHashBtn.classList.add('bg-blue-500','text-white','shadow-md'); dom.hexHashBtn.classList.remove('text-slate-400'); }
             else { dom.hexHashBtn.classList.remove('bg-blue-500','text-white','shadow-md'); dom.hexHashBtn.classList.add('text-slate-400'); }
-            // Case Toggle
             if(hexPrefs.upper) {
                 dom.hexUpperBtn.classList.add('bg-white','shadow-sm','text-blue-600'); dom.hexUpperBtn.classList.remove('text-slate-400');
                 dom.hexLowerBtn.classList.add('text-slate-400'); dom.hexLowerBtn.classList.remove('bg-white','shadow-sm','text-blue-600');
@@ -461,7 +490,6 @@
             }
         };
 
-        // Binders
         ['val-r','val-g','val-b','val-a-perc'].forEach(id => document.getElementById(id).onchange = sync.rgb);
         ['val-lr','val-lg','val-lb','val-la'].forEach(id => document.getElementById(id).onchange = sync.linear);
         ['val-hex','val-hex-alpha'].forEach(id => document.getElementById(id).onchange = () => sync.hex(id));
@@ -481,9 +509,6 @@
         dom.hueSlide.oninput = (e) => { currH = parseFloat(e.target.value); updateAll('slide'); };
         dom.alphaSlide.oninput = (e) => { currA = parseFloat(e.target.value)/100; updateAll('slide'); };
 
-        /**
-         * HEX Prefs
-         */
         window.toggleOption = (opt) => {
             if(opt === 'hex_hash') hexPrefs.hash = !hexPrefs.hash;
             updateAll('hex_opt');
@@ -491,9 +516,6 @@
         dom.hexUpperBtn.onclick = () => { hexPrefs.upper = true; updateAll('hex_opt'); };
         dom.hexLowerBtn.onclick = () => { hexPrefs.upper = false; updateAll('hex_opt'); };
 
-        /**
-         * History & Lang
-         */
         function addHistory() {
             const [r,g,b] = hsv2rgb(currH, currS, currV);
             const hex = [r,g,b].map(x => x.toString(16).padStart(2,'0')).join('');
