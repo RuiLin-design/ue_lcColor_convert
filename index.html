@@ -120,8 +120,14 @@
 
     <main class="max-w-6xl mx-auto space-y-3 pb-8">
         
+        <nav class="flex justify-center md:justify-start items-center gap-6 px-3 pt-3 pb-2 border-b border-slate-200/50">
+            <a href="about.html" data-i18n="nav_about" class="text-sm font-bold text-slate-500 hover:text-blue-500 transition-colors">About</a>
+            <a href="help.html" data-i18n="nav_help" class="text-sm font-bold text-slate-500 hover:text-blue-500 transition-colors">Help Center</a>
+            <a href="privacy.html" data-i18n="privacy_policy" class="text-sm font-bold text-slate-500 hover:text-blue-500 transition-colors">Privacy Policy</a>
+        </nav>
+
         <header class="flex justify-between items-center px-2 pt-2">
-            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.25em] leading-none">UE5 Color Workspace 6.1</h1>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.25em] leading-none">UE5 Color Converter V1.0</h1>
             
             <div class="lang-dropdown" id="lang-dropdown">
                 <button class="lang-btn" id="lang-btn" aria-label="Select Language">
@@ -313,8 +319,12 @@
 
         <footer class="mt-6 text-center text-xs text-slate-400 space-y-2">
             <p>&copy; 2026 UE5 Color Converter. All rights reserved.</p>
-            <p>
-                <a href="privacy.html" data-i18n="privacy_policy" class="hover:text-blue-500 underline transition-colors">Privacy Policy</a>
+            <p class="space-x-3">
+                <a href="about.html" data-i18n="nav_about" class="hover:text-blue-500 transition-colors">About Us</a>
+                <span>|</span>
+                <a href="help.html" data-i18n="nav_help" class="hover:text-blue-500 transition-colors">Help Center</a>
+                <span>|</span>
+                <a href="privacy.html" data-i18n="privacy_policy" class="hover:text-blue-500 transition-colors">Privacy Policy</a>
             </p>
         </footer>
 
@@ -326,7 +336,7 @@
          */
         const i18n = {
             zh: { 
-                selected_color: "当前颜色", hue: "色相", alpha: "透明度", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "记录", clear_history: "清空", lang_label: "语言",
+                nav_about: "关于我们", nav_help: "帮助中心", selected_color: "当前颜色", hue: "色相", alpha: "透明度", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "记录", clear_history: "清空", lang_label: "语言",
                 sec_about_title: "开发初衷与工具简介", sec_about_desc: "作为虚幻引擎开发者，我们经常需要将 UI 设计师提供的 sRGB 或 HEX 颜色准确地还原到引擎内部的线性颜色空间 (Linear Color Space)。手动计算 Gamma 2.2 曲线不仅繁琐而且容易出错。我们开发了这款高精度的 UE5 颜色转换器，旨在无缝转换 Linear Color、sRGB、HEX、HSL 和 HSV。无论你是编写 C++ UI 模块、调整 UMG 控件，还是制作材质，都能在此瞬间获取引擎就绪的 FLinearColor 数值。",
                 sec_guide_title: "使用指南", sec_guide_desc: "工具的使用非常直观：你可以直接将网页颜色代码粘贴到 HEX 输入框中，或者使用可视化的拾色器寻找理想的色调。所有相关颜色模型的数据将实时同步更新。点击“Linear Color”标题旁的复制图标，即可一键复制 Unreal Engine 所需的精确浮点数参数。你还可以根据团队的代码规范，自由切换 HEX 的格式（大/小写、是否带 # 号）。",
                 sec_theory_title: "技术原理：sRGB 与线性颜色的区别", sec_theory_desc: "为什么 Unreal Engine 强制使用 Linear Color？现代游戏引擎依赖基于物理的渲染 (PBR)，这要求所有光照和颜色计算必须在线性空间中进行，以保证物理上的准确性。然而，显示器为了契合人眼的视觉感知，默认使用 sRGB 曲线（约等于 Gamma 2.2）显示颜色。如果直接将 sRGB 值输入材质而不进行转换，游戏内的颜色会显得发灰或失真。本工具为你自动执行了严谨的逆向 Gamma 矫正数学计算。",
@@ -334,7 +344,7 @@
                 privacy_policy: "隐私政策"
             },
             'zh-HK': { 
-                selected_color: "目前顏色", hue: "色相", alpha: "透明度", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "歷史記錄", clear_history: "清除", lang_label: "語言",
+                nav_about: "關於我們", nav_help: "幫助中心", selected_color: "目前顏色", hue: "色相", alpha: "透明度", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "歷史記錄", clear_history: "清除", lang_label: "語言",
                 sec_about_title: "開發初衷與工具簡介", sec_about_desc: "作為虛幻引擎 (Unreal Engine) 開發者，我們經常需要將 UI 設計師提供的 sRGB 或 HEX 顏色準確地還原到引擎內部的線性顏色空間 (Linear Color Space)。手動計算 Gamma 2.2 曲線不僅繁瑣而且容易出錯。我們開發了這款高精度的 UE5 顏色轉換器，旨在無縫轉換 Linear Color、sRGB、HEX、HSL 和 HSV。無論你是編寫 C++ UI 模塊、調整 UMG 控件，還是製作材質，都能在此瞬間獲取引擎就緒的 FLinearColor 數值。",
                 sec_guide_title: "使用指南", sec_guide_desc: "工具的使用非常直觀：你可以直接將網頁顏色代碼貼上到 HEX 輸入框中，或者使用視覺化的拾色器尋找理想的色調。所有相關顏色模型的數據將即時同步更新。點擊「Linear Color」標題旁的複製圖示，即可一鍵複製 Unreal Engine 所需的精確浮點數參數。你還可以根據團隊的代碼規範，自由切換 HEX 的格式（大/小寫、是否帶 # 號）。",
                 sec_theory_title: "技術原理：sRGB 與線性顏色的區別", sec_theory_desc: "為什麼 Unreal Engine 強制使用 Linear Color？現代遊戲引擎依賴基於物理的渲染 (PBR)，這要求所有光照和顏色計算必須在線性空間中進行，以保證物理上的準確性。然而，顯示器為了契合人眼的視覺感知，默認使用 sRGB 曲線（約等於 Gamma 2.2）顯示顏色。如果直接將 sRGB 值輸入材質而不進行轉換，遊戲內的顏色會顯得發灰或失真。本工具為你自動執行了嚴謹的逆向 Gamma 矯正常式。",
@@ -342,7 +352,7 @@
                 privacy_policy: "私隱政策"
             },
             'zh-TW': { 
-                selected_color: "目前顏色", hue: "色相", alpha: "透明度", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "歷史紀錄", clear_history: "清除", lang_label: "語言",
+                nav_about: "關於我們", nav_help: "幫助中心", selected_color: "目前顏色", hue: "色相", alpha: "透明度", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "歷史紀錄", clear_history: "清除", lang_label: "語言",
                 sec_about_title: "開發初衷與工具簡介", sec_about_desc: "作為虛幻引擎 (Unreal Engine) 開發者，我們經常需要將 UI 設計師提供的 sRGB 或 HEX 顏色準確地還原到引擎內部的線性顏色空間 (Linear Color Space)。手動計算 Gamma 2.2 曲線不僅繁瑣而且容易出錯。我們開發了這款高精度的 UE5 顏色轉換器，旨在無縫轉換 Linear Color、sRGB、HEX、HSL 和 HSV。無論你是編寫 C++ UI 模組、調整 UMG 控制項，還是製作材質，都能在此瞬間獲取引擎就緒的 FLinearColor 數值。",
                 sec_guide_title: "使用指南", sec_guide_desc: "工具的使用非常直觀：你可以直接將網頁顏色代碼貼上到 HEX 輸入框中，或者使用視覺化的拾色器尋找理想的色調。所有相關顏色模型的數據將即時同步更新。點擊「Linear Color」標題旁的複製圖示，即可一鍵複製 Unreal Engine 所需的精確浮點數參數。你還可以根據團隊的程式碼規範，自由切換 HEX 的格式（大/小寫、是否帶 # 號）。",
                 sec_theory_title: "技術原理：sRGB 與線性顏色的區別", sec_theory_desc: "為什麼 Unreal Engine 強制使用 Linear Color？現代遊戲引擎依賴基於物理的渲染 (PBR)，這要求所有光照和顏色計算必須在線性空間中進行，以保證物理上的準確性。然而，顯示器為了契合人眼的視覺感知，預設使用 sRGB 曲線（約等於 Gamma 2.2）顯示顏色。如果直接將 sRGB 值輸入材質而不進行轉換，遊戲內的顏色會顯得發灰或失真。本工具為你自動執行了嚴謹的逆向 Gamma 校正數學計算。",
@@ -350,7 +360,7 @@
                 privacy_policy: "隱私權政策"
             },
             en: { 
-                selected_color: "Selected", hue: "Hue", alpha: "Alpha", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "History", clear_history: "Clear", lang_label: "Language",
+                nav_about: "About", nav_help: "Help Center", selected_color: "Selected", hue: "Hue", alpha: "Alpha", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "History", clear_history: "Clear", lang_label: "Language",
                 sec_about_title: "About This Tool (Development Intent)", sec_about_desc: "As Unreal Engine developers, we constantly face the challenge of matching UI design colors (which are in sRGB or HEX) to the Engine's internal Linear Color space. Manually calculating the Gamma 2.2 curve is tedious and prone to error. We built this high-precision UE5 Color Converter to seamlessly translate between Linear Color, sRGB, HEX, HSL, and HSV. Whether you are coding C++ UI modules, adjusting UMG widgets, or creating Materials, this tool provides instant, engine-ready FLinearColor values.",
                 sec_guide_title: "User Guide", sec_guide_desc: "Using the converter is intuitive: simply paste your web color code into the HEX box, or use the visual color picker to find the perfect shade. All other color models will update instantly. Click the copy icon next to the 'Linear Color (Gamma 2.2)' header to copy the exact values needed for Unreal Engine's parameter inputs. You can also toggle HEX formatting preferences (uppercase/lowercase, hash inclusion) to match your team's coding standards.",
                 sec_theory_title: "The Principle: sRGB vs Linear Color", sec_theory_desc: "Why does Unreal Engine use Linear Color? Modern game engines rely on Physically Based Rendering (PBR), which requires light calculations to be done in a linear space to remain physically accurate. However, computer monitors display colors using an sRGB curve (approximately Gamma 2.2) to match human eye perception. If you directly input standard sRGB values into a material without converting them, the colors will appear washed out or incorrect in the game. This tool automatically applies the correct mathematical inverse gamma correction for you.",
@@ -358,7 +368,7 @@
                 privacy_policy: "Privacy Policy"
             },
             ja: { 
-                selected_color: "選択中の色", hue: "色相", alpha: "透明度", linear_color: "リニアカラー (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "履歴", clear_history: "クリア", lang_label: "言語",
+                nav_about: "概要", nav_help: "ヘルプセンター", selected_color: "選択中の色", hue: "色相", alpha: "透明度", linear_color: "リニアカラー (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "履歴", clear_history: "クリア", lang_label: "言語",
                 sec_about_title: "開発の意図とツールの概要", sec_about_desc: "Unreal Engineの開発者として、UIデザインの色（sRGBやHEX）をエンジン内部のリニアカラー空間に正確に変換することは常に課題です。Gamma 2.2カーブを手動で計算するのは面倒でエラーが発生しやすくなります。この高精度なUE5カラーコンバーターは、Linear Color、sRGB、HEX、HSL、HSVをシームレスに変換するために開発されました。C++のUIモジュールを作成する場合でも、UMGウィジェットを調整する場合でも、マテリアルを作成する場合でも、エンジンですぐに使えるFLinearColor値を瞬時に取得できます。",
                 sec_guide_title: "使い方ガイド", sec_guide_desc: "使い方は非常に直感的です。ウェブのカラーコードをHEXボックスに貼り付けるか、カラーピッカーで理想の色を選択するだけです。他のすべてのカラーモデルは瞬時に更新されます。「Linear Color」の横にあるコピーアイコンをクリックすると、Unreal Engineのパラメータ入力に必要な正確な値がコピーされます。また、チームのコーディング規約に合わせて、HEXのフォーマット（大文字/小文字、ハッシュタグの有無）を切り替えることもできます。",
                 sec_theory_title: "原理：sRGBとリニアカラーの違い", sec_theory_desc: "なぜUnreal Engineはリニアカラーを使用するのでしょうか？現代のゲームエンジンは物理ベースレンダリング（PBR）に依存しており、物理的な正確さを保つために光の計算はリニア空間で行う必要があります。しかし、モニターは人間の目の知覚に合わせてsRGBカーブ（約Gamma 2.2）を使用して色を表示します。変換せずに標準のsRGB値をそのままマテリアルに入力すると、ゲーム内での色がくすんだり不正確になります。このツールは、厳密な逆ガンマ補正の計算を自動的に行います。",
@@ -366,7 +376,7 @@
                 privacy_policy: "プライバシーポリシー"
             },
             ko: { 
-                selected_color: "선택된 색상", hue: "색조", alpha: "알파(투명도)", linear_color: "선형 색상 (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "기록", clear_history: "지우기", lang_label: "언어",
+                nav_about: "소개", nav_help: "도움말 센터", selected_color: "선택된 색상", hue: "색조", alpha: "알파(투명도)", linear_color: "선형 색상 (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "기록", clear_history: "지우기", lang_label: "언어",
                 sec_about_title: "도구 소개 및 개발 의도", sec_about_desc: "언리얼 엔진 개발자로서 우리는 UI 디자인 색상(sRGB 또는 HEX)을 엔진 내부의 선형 색상 공간(Linear Color Space)으로 정확히 일치시켜야 하는 문제에 자주 직면합니다. Gamma 2.2 곡선을 수동으로 계산하는 것은 번거롭고 오류가 발생하기 쉽습니다. 우리는 Linear Color, sRGB, HEX, HSL 및 HSV 간의 원활한 변환을 위해 이 고정밀 UE5 색상 변환기를 개발했습니다. C++ UI 모듈을 코딩하든, UMG 위젯을 조정하든, 머티리얼을 제작하든 이 도구를 사용하면 엔진에서 바로 사용할 수 있는 FLinearColor 값을 즉시 얻을 수 있습니다.",
                 sec_guide_title: "사용 가이드", sec_guide_desc: "도구 사용법은 매우 직관적입니다. 웹 색상 코드를 HEX 입력란에 붙여넣거나 시각적 색상 선택기를 사용하여 완벽한 색조를 찾으세요. 다른 모든 색상 모델의 데이터가 실시간으로 동기화되어 업데이트됩니다. 'Linear Color' 제목 옆의 복사 아이콘을 클릭하여 언리얼 엔진의 매개변수 입력에 필요한 정확한 값을 복사할 수 있습니다. 또한 팀의 코드 규칙에 맞게 HEX 형식(대/소문자, # 포함 여부)을 자유롭게 전환할 수 있습니다.",
                 sec_theory_title: "원리: sRGB와 선형 색상의 차이", sec_theory_desc: "왜 언리얼 엔진은 선형 색상을 사용할까요? 현대의 게임 엔진은 물리 기반 렌더링(PBR)에 의존하며, 물리적 정확성을 유지하려면 모든 조명 및 색상 계산이 선형 공간에서 수행되어야 합니다. 그러나 모니터는 인간의 시각적 인지에 맞추기 위해 기본적으로 sRGB 곡선(약 Gamma 2.2)을 사용하여 색상을 표시합니다. sRGB 값을 변환하지 않고 머티리얼에 직접 입력하면 게임 내 색상이 흐릿하거나 왜곡되어 나타납니다. 이 도구는 수학적으로 엄격한 역감마 보정을 자동으로 수행합니다.",
@@ -374,7 +384,7 @@
                 privacy_policy: "개인정보처리방침"
             },
             ru: { 
-                selected_color: "Текущий цвет", hue: "Оттенок", alpha: "Альфа", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "История", clear_history: "Очистить", lang_label: "Язык",
+                nav_about: "О нас", nav_help: "Помощь", selected_color: "Текущий цвет", hue: "Оттенок", alpha: "Альфа", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "История", clear_history: "Очистить", lang_label: "Язык",
                 sec_about_title: "О программе (Цель разработки)", sec_about_desc: "Как разработчики Unreal Engine, мы постоянно сталкиваемся с необходимостью точного преобразования цветов UI-дизайна (в формате sRGB или HEX) во внутреннее линейное цветовое пространство движка (Linear Color Space). Вычисление кривой Gamma 2.2 вручную утомительно и чревато ошибками. Мы создали этот высокоточный конвертер цветов UE5 для плавного перевода между Linear Color, sRGB, HEX, HSL и HSV. Пишете ли вы модули UI на C++, настраиваете виджеты UMG или создаете материалы, этот инструмент мгновенно предоставляет готовые для движка значения FLinearColor.",
                 sec_guide_title: "Руководство пользователя", sec_guide_desc: "Использовать конвертер интуитивно просто: вставьте веб-код цвета в поле HEX или используйте визуальную палитру для выбора идеального оттенка. Все остальные цветовые модели обновятся мгновенно. Нажмите значок копирования рядом с заголовком 'Linear Color', чтобы скопировать точные значения, необходимые для параметров Unreal Engine. Вы также можете переключать форматы HEX (заглавные/строчные буквы, наличие знака решетки) в соответствии со стандартами кодирования вашей команды.",
                 sec_theory_title: "Принцип: разница между sRGB и Linear Color", sec_theory_desc: "Почему Unreal Engine использует Linear Color? Современные игровые движки полагаются на физически корректный рендеринг (PBR), который требует выполнения всех расчетов освещения в линейном пространстве для сохранения физической точности. Однако мониторы отображают цвета с использованием кривой sRGB (приблизительно Gamma 2.2), чтобы соответствовать восприятию человеческого глаза. Если ввести стандартные значения sRGB напрямую в материал без преобразования, цвета в игре будут выглядеть блеклыми или искаженными. Этот инструмент автоматически применяет математически точную обратную гамма-коррекцию.",
@@ -382,7 +392,7 @@
                 privacy_policy: "Политика конфиденциальности"
             },
             es: { 
-                selected_color: "Color actual", hue: "Matiz", alpha: "Alfa", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "Historial", clear_history: "Limpiar", lang_label: "Idioma",
+                nav_about: "Sobre nosotros", nav_help: "Ayuda", selected_color: "Color actual", hue: "Matiz", alpha: "Alfa", linear_color: "Linear Color (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "Historial", clear_history: "Limpiar", lang_label: "Idioma",
                 sec_about_title: "Sobre esta herramienta", sec_about_desc: "Como desarrolladores de Unreal Engine, nos enfrentamos constantemente al desafío de adaptar los colores del diseño de la interfaz de usuario (que están en sRGB o HEX) al espacio de color lineal interno del motor. Calcular manualmente la curva Gamma 2.2 es tedioso y propenso a errores. Construimos este convertidor de color de alta precisión para UE5 para traducir sin problemas entre Linear Color, sRGB, HEX, HSL y HSV. Ya sea que estés programando módulos de UI en C++, ajustando widgets UMG o creando materiales, esta herramienta proporciona valores FLinearColor listos para el motor al instante.",
                 sec_guide_title: "Guía de uso", sec_guide_desc: "Usar el convertidor es intuitivo: simplemente pega tu código de color web en el cuadro HEX, o usa el selector de color visual para encontrar el tono perfecto. Todos los demás modelos de color se actualizarán instantáneamente. Haz clic en el ícono de copia junto al encabezado 'Linear Color' para copiar los valores exactos necesarios para los parámetros de Unreal Engine. También puedes alternar las preferencias de formato HEX (mayúsculas/minúsculas, inclusión de numeral) para que coincidan con los estándares de tu equipo.",
                 sec_theory_title: "El Principio: sRGB vs Color Lineal", sec_theory_desc: "¿Por qué Unreal Engine usa Color Lineal? Los motores de juegos modernos dependen de la renderización basada en la física (PBR), que requiere que los cálculos de luz se realicen en un espacio lineal para mantener la precisión física. Sin embargo, los monitores de computadora muestran colores usando una curva sRGB (aproximadamente Gamma 2.2) para igualar la percepción del ojo humano. Si ingresas valores sRGB estándar directamente en un material sin convertirlos, los colores se verán descoloridos o incorrectos en el juego. Esta herramienta aplica automáticamente la corrección gamma inversa matemáticamente correcta para ti.",
@@ -390,7 +400,7 @@
                 privacy_policy: "Política de Privacidad"
             },
             fr: { 
-                selected_color: "Couleur actuelle", hue: "Teinte", alpha: "Alpha", linear_color: "Couleur Linéaire (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "Historique", clear_history: "Effacer", lang_label: "Langue",
+                nav_about: "À propos", nav_help: "Aide", selected_color: "Couleur actuelle", hue: "Teinte", alpha: "Alpha", linear_color: "Couleur Linéaire (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "Historique", clear_history: "Effacer", lang_label: "Langue",
                 sec_about_title: "À propos de cet outil", sec_about_desc: "En tant que développeurs Unreal Engine, nous sommes constamment confrontés au défi de faire correspondre les couleurs de conception UI (qui sont en sRGB ou HEX) à l'espace colorimétrique linéaire interne du moteur. Calculer manuellement la courbe Gamma 2.2 est fastidieux et source d'erreurs. Nous avons conçu ce convertisseur de couleurs haute précision pour UE5 afin de traduire de manière transparente entre Couleur Linéaire, sRGB, HEX, HSL et HSV. Que vous codiez des modules UI C++, ajustiez des widgets UMG ou créiez des matériaux, cet outil fournit instantanément des valeurs FLinearColor prêtes pour le moteur.",
                 sec_guide_title: "Guide de l'utilisateur", sec_guide_desc: "L'utilisation du convertisseur est intuitive : collez simplement votre code de couleur web dans la case HEX, ou utilisez le sélecteur de couleurs visuel pour trouver la nuance parfaite. Tous les autres modèles de couleurs seront mis à jour instantanément. Cliquez sur l'icône de copie à côté de l'en-tête 'Couleur Linéaire' pour copier les valeurs exactes nécessaires aux paramètres d'Unreal Engine. Vous pouvez également basculer les préférences de formatage HEX (majuscules/minuscules, avec ou sans dièse) pour correspondre aux normes de codage de votre équipe.",
                 sec_theory_title: "Le Principe : sRGB vs Couleur Linéaire", sec_theory_desc: "Pourquoi Unreal Engine utilise-t-il la Couleur Linéaire ? Les moteurs de jeux modernes s'appuient sur le rendu basé sur la physique (PBR), qui exige que les calculs de lumière soient effectués dans un espace linéaire pour rester physiquement précis. Cependant, les écrans d'ordinateur affichent les couleurs en utilisant une courbe sRGB (environ Gamma 2.2) pour correspondre à la perception de l'œil humain. Si vous entrez directement des valeurs sRGB standard dans un matériau sans les convertir, les couleurs paraîtront délavées ou incorrectes dans le jeu. Cet outil applique automatiquement la correction gamma inverse mathématiquement correcte.",
@@ -398,7 +408,7 @@
                 privacy_policy: "Politique de confidentialité"
             },
             de: { 
-                selected_color: "Aktuelle Farbe", hue: "Farbton", alpha: "Alpha", linear_color: "Lineare Farbe (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "Verlauf", clear_history: "Leeren", lang_label: "Sprache",
+                nav_about: "Über uns", nav_help: "Hilfe", selected_color: "Aktuelle Farbe", hue: "Farbton", alpha: "Alpha", linear_color: "Lineare Farbe (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "Verlauf", clear_history: "Leeren", lang_label: "Sprache",
                 sec_about_title: "Über dieses Tool", sec_about_desc: "Als Unreal Engine-Entwickler stehen wir ständig vor der Herausforderung, UI-Designfarben (die in sRGB oder HEX vorliegen) an den internen linearen Farbraum der Engine anzupassen. Die manuelle Berechnung der Gamma-2.2-Kurve ist mühsam und fehleranfällig. Wir haben diesen hochpräzisen UE5-Farbkonverter entwickelt, um nahtlos zwischen Linear Color, sRGB, HEX, HSL und HSV zu übersetzen. Egal, ob Sie C++-UI-Module programmieren, UMG-Widgets anpassen oder Materialien erstellen, dieses Tool liefert sofort Engine-bereite FLinearColor-Werte.",
                 sec_guide_title: "Benutzerhandbuch", sec_guide_desc: "Die Verwendung des Konverters ist intuitiv: Fügen Sie einfach Ihren Web-Farbcode in das HEX-Feld ein oder verwenden Sie die visuelle Farbauswahl, um den perfekten Farbton zu finden. Alle anderen Farbmodelle werden sofort aktualisiert. Klicken Sie auf das Kopiersymbol neben der Überschrift 'Lineare Farbe', um die genauen Werte zu kopieren, die für die Parametereingaben von Unreal Engine benötigt werden. Sie können auch die Einstellungen für die HEX-Formatierung (Groß-/Kleinschreibung, Raute-Zeichen) an die Codierungsstandards Ihres Teams anpassen.",
                 sec_theory_title: "Das Prinzip: sRGB vs. Lineare Farbe", sec_theory_desc: "Warum verwendet die Unreal Engine lineare Farben? Moderne Spiel-Engines verlassen sich auf physikbasiertes Rendering (PBR), bei dem Lichtberechnungen in einem linearen Raum durchgeführt werden müssen, um physikalisch genau zu bleiben. Computermonitore zeigen Farben jedoch mithilfe einer sRGB-Kurve (ca. Gamma 2.2) an, um der Wahrnehmung des menschlichen Auges zu entsprechen. Wenn Sie Standard-sRGB-Werte direkt in ein Material eingeben, ohne sie zu konvertieren, wirken die Farben im Spiel verwaschen oder falsch. Dieses Tool wendet automatisch die mathematisch korrekte inverse Gammakorrektur für Sie an.",
@@ -406,7 +416,7 @@
                 privacy_policy: "Datenschutzrichtlinie"
             },
             ar: { 
-                selected_color: "اللون الحالي", hue: "درجة اللون", alpha: "الشفافية (ألفا)", linear_color: "اللون الخطي (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "السجل", clear_history: "مسح", lang_label: "اللغة",
+                nav_about: "معلومات عنا", nav_help: "مركز المساعدة", selected_color: "اللون الحالي", hue: "درجة اللون", alpha: "الشفافية (ألفا)", linear_color: "اللون الخطي (Gamma 2.2)", rgb: "RGB", hex: "HEX", hsl: "HSL", hsv: "HSV", color_history: "السجل", clear_history: "مسح", lang_label: "اللغة",
                 sec_about_title: "عن هذه الأداة (الغرض من التطوير)", sec_about_desc: "كمطوري Unreal Engine، نواجه باستمرار تحدي مطابقة ألوان تصميم واجهة المستخدم (والتي تكون بتنسيق sRGB أو HEX) مع مساحة اللون الخطي الداخلية للمحرك. يعد حساب منحنى Gamma 2.2 يدويًا أمرًا شاقًا وعرضة للخطأ. لقد قمنا ببناء محول ألوان UE5 عالي الدقة هذا للترجمة بسلاسة بين اللون الخطي و sRGB و HEX و HSL و HSV. سواء كنت تقوم ببرمجة وحدات واجهة المستخدم C++، أو تعديل أدوات UMG، أو إنشاء المواد، فإن هذه الأداة توفر قيم FLinearColor جاهزة للمحرك على الفور.",
                 sec_guide_title: "دليل الاستخدام", sec_guide_desc: "استخدام المحول بديهي للغاية: ما عليك سوى لصق كود لون الويب الخاص بك في مربع HEX، أو استخدام منتقي الألوان المرئي للعثور على الدرجة المثالية. سيتم تحديث جميع نماذج الألوان الأخرى على الفور. انقر فوق رمز النسخ بجوار عنوان 'اللون الخطي' لنسخ القيم الدقيقة المطلوبة لإدخالات معلمات Unreal Engine. يمكنك أيضًا التبديل بين تفضيلات تنسيق HEX (أحرف كبيرة/صغيرة، وتضمين رمز المربع #) لتتناسب مع معايير الكود الخاصة بفريقك.",
                 sec_theory_title: "المبدأ: sRGB مقابل اللون الخطي", sec_theory_desc: "لماذا يستخدم Unreal Engine اللون الخطي؟ تعتمد محركات الألعاب الحديثة على العرض القائم على الفيزياء (PBR)، والذي يتطلب إجراء حسابات الضوء في مساحة خطية لتظل دقيقة فيزيائيًا. ومع ذلك، تعرض شاشات الكمبيوتر الألوان باستخدام منحنى sRGB (حوالي Gamma 2.2) لمطابقة إدراك العين البشرية. إذا قمت بإدخال قيم sRGB القياسية مباشرة في مادة دون تحويلها، فستظهر الألوان باهتة أو غير صحيحة في اللعبة. تطبق هذه الأداة التصحيح العكسي الرياضي الصحيح لمنحنى جاما تلقائيًا.",
