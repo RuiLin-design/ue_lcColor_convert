@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3374799630888227" crossorigin="anonymous"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9RDEMD2Q8L"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9RDEMD2Q8L');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>About Us | UE5 Color Converter Developer Team</title>
+    <meta name="description" content="Learn about the team and technical story behind the UE5 Color Converter. We are Technical Artists and UI Programmers dedicated to building the ultimate color workflow tools for Unreal Engine developers.">
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        :root { font-size: 16px; } 
+        body { background-color: #f8fafc; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    </style>
+</head>
+<body class="p-4 text-slate-800">
+
+    <main class="max-w-4xl mx-auto space-y-6 pb-12 pt-4">
+        
+        <nav class="flex justify-between items-center px-2">
+            <a href="index.html" class="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Converter
+            </a>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">About Us</h1>
+        </nav>
+
+        <article class="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm space-y-10">
+            
+            <header class="text-center space-y-4">
+                <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">About UE5 Color Converter</h1>
+                <p class="text-lg text-slate-500 font-medium">Bridging the color gap between design mockups and the game engine.</p>
+            </header>
+
+            <div class="w-16 h-1 bg-blue-500 mx-auto rounded-full"></div>
+
+            <section class="space-y-4 text-slate-600 leading-relaxed">
+                <h2 class="text-2xl font-black text-slate-800">Our Technical Story</h2>
+                <p>Hello! We are a group of Technical Artists and C++ UI Programmers who are deeply passionate about game development. While working on various AAA and indie titles, we repeatedly hit a frustrating workflow bottleneck: <strong>color distortion across different software</strong>.</p>
+                <p>When UI/UX designers hand off pixel-perfect designs from Figma, Photoshop, or Sketch, the nightmare usually begins. Directly plugging those HEX or sRGB values into Unreal Engine 5's UMG widgets or Material Blueprints results in colors that look washed out, desaturated, or muddy in-engine.</p>
+                <p>Initially, teams often rely on manual visual tweaking, which not only wastes valuable development time but also sparks endless "it doesn't look like the mockup" debates between the art and engineering departments.</p>
+            </section>
+
+            <section class="space-y-4 text-slate-600 leading-relaxed">
+                <h2 class="text-2xl font-black text-slate-800">The Core Pain Point: Why Is This Tool Necessary?</h2>
+                <p>To solve this at its root, we have to look at Unreal Engine's rendering pipeline. The answer is simple but critical: <strong>modern engines rely on Physically Based Rendering (PBR)</strong>. To ensure absolute physical accuracy in lighting and shadow calculations, all internal color math in UE5 must happen in <strong>Linear Color Space</strong>.</p>
+                <p>However, monitors and most design software use the sRGB color space with a Gamma 2.2 curve to match human non-linear visual perception. Feeding sRGB data directly into a linear renderer without strict mathematical inverse gamma correction is a recipe for disaster.</p>
+                <p>We tried various online calculators and Excel spreadsheets, but they either lacked precision (causing subtle color shifts) or were too clunky for high-frequency UI development. Thus, the UE5 Color Converter was born—designed to be the ultimate, always-open side-monitor companion.</p>
+            </section>
+
+            <section class="space-y-4 text-slate-600 leading-relaxed">
+                <h2 class="text-2xl font-black text-slate-800">Our Philosophy & Promises</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                        <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full"></span> Absolutely Free
+                        </h3>
+                        <p class="text-sm">We know the struggles of indie devs and small studios. The core conversion features will remain permanently free with no hidden subscriptions, serving as our contribution to the global UE community.</p>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                        <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full"></span> Privacy First
+                        </h3>
+                        <p class="text-sm">Whether it's a confidential project palette or a quick test color, all math is executed locally in your browser via JavaScript. Zero data is ever uploaded to our servers.</p>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                        <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full"></span> Uncompromising Precision
+                        </h3>
+                        <p class="text-sm">We strictly follow the standard sRGB to Linear piecewise function, ensuring the generated FLinearColor floats are accurate to six decimal places to satisfy the engine's underlying renderer.</p>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                        <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full"></span> Developer-Centric
+                        </h3>
+                        <p class="text-sm">Toggle HEX formats or copy C++ struct parameters in one click. We believe in subtraction—removing all unnecessary clutter that gets in the way of your efficiency.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-4 text-slate-600 leading-relaxed">
+                <h2 class="text-2xl font-black text-slate-800">Roadmap</h2>
+                <p>This is more than just a static calculator; we are continuously iterating on it. In future updates, we plan to introduce:</p>
+                <ul class="list-disc list-inside space-y-1 ml-2 text-sm">
+                    <li>Support for modern, perceptually uniform color spaces like OKLCH.</li>
+                    <li>Direct export functionality for Unreal Engine Color Palette assets (<code>.uasset</code>).</li>
+                    <li>An official, lightweight Editor Plugin for UE5 for seamless in-engine conversion.</li>
+                </ul>
+            </section>
+
+            <section class="bg-slate-50 p-8 rounded-2xl border border-slate-100 space-y-4 text-slate-600 mt-8">
+                <h2 class="text-2xl font-black text-slate-800">Get In Touch</h2>
+                <p>Whether you're an environment artist fighting with material nodes or a C++ programmer writing Slate UI, we want to hear from you! If you spot a bug or have a feature request that could speed up your workflow, please don't hesitate to reach out.</p>
+                <div class="flex items-center gap-3 mt-6 p-4 bg-white rounded-xl border border-slate-200 inline-flex shadow-sm">
+                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <a href="" class="text-blue-600 font-bold hover:underline text-lg"></a>
+                </div>
+            </section>
+
+        </article>
+
+        <footer class="text-center text-xs text-slate-400 space-y-2">
+            <p>&copy; 2026 UE5 Color Converter. All rights reserved.</p>
+            <p class="space-x-3">
+                <a href="index.html" class="hover:text-blue-500 transition-colors">Home</a>
+                <span>|</span>
+                <a href="help.html" class="hover:text-blue-500 transition-colors">Help Center</a>
+                <span>|</span>
+                <a href="privacy.html" class="hover:text-blue-500 transition-colors">Privacy Policy</a>
+            </p>
+        </footer>
+
+    </main>
+</body>
+</html>
