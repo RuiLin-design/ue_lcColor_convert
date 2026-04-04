@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3374799630888227" crossorigin="anonymous"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9RDEMD2Q8L"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9RDEMD2Q8L');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Help Center & FAQ | UE5 Color Converter</title>
+    <meta name="description" content="UE5 Color Converter Help Center. Get detailed user guides, technical explanations on Linear Color vs sRGB, Gamma correction, and learn how to fix washed-out colors in Unreal Engine.">
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        :root { font-size: 16px; } 
+        body { background-color: #f8fafc; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    </style>
+</head>
+<body class="p-4 text-slate-800">
+
+    <main class="max-w-4xl mx-auto space-y-6 pb-12 pt-4">
+        
+        <nav class="flex justify-between items-center px-2">
+            <a href="index.html" class="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Converter
+            </a>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Help Center</h1>
+        </nav>
+
+        <article class="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm space-y-10">
+            
+            <header class="space-y-4 border-b border-slate-100 pb-8">
+                <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Help Center & FAQ</h1>
+                <p class="text-lg text-slate-500 font-medium">From basic operations to advanced troubleshooting—master your UE5 color workflow here.</p>
+            </header>
+
+            <section class="space-y-6">
+                <h2 class="text-2xl font-black text-slate-800">Core Workflow</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center font-black text-2xl text-blue-300">1</div>
+                        <h3 class="font-bold text-slate-800 mb-2 relative z-10">Input Design Color</h3>
+                        <p class="text-sm text-slate-600 relative z-10">Paste your color codes directly from Figma or Photoshop into the <strong>HEX</strong> box (e.g., <code>#FF5500</code>), or manually dial it in using the HSV color picker.</p>
+                    </div>
+                    
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center font-black text-2xl text-blue-300">2</div>
+                        <h3 class="font-bold text-slate-800 mb-2 relative z-10">See Real-Time Sync</h3>
+                        <p class="text-sm text-slate-600 relative z-10">The tool instantly calculates everything locally, updating RGB, HSL, HSV, and most importantly, the <strong>Linear Color (Gamma 2.2)</strong> float panel.</p>
+                    </div>
+
+                     <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center font-black text-2xl text-blue-300">3</div>
+                        <h3 class="font-bold text-slate-800 mb-2 relative z-10">One-Click Copy</h3>
+                        <p class="text-sm text-slate-600 relative z-10">Click the <svg class="w-4 h-4 inline-block text-slate-400 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg> copy icon in the Linear Color panel to grab the exact parameters, ready to be pasted into Unreal Engine or your C++ code.</p>
+                    </div>
+                </div>
+            </section>
+
+             <section class="space-y-6 border-t border-slate-100 pt-8">
+                <h2 class="text-2xl font-black text-slate-800">Color Theory & Troubleshooting</h2>
+                
+                <div class="space-y-8">
+                    
+                    <div class="space-y-3 bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-red-500 rounded-full inline-block"></span>
+                            Why do web colors look washed out or muddy in UE5?
+                        </h3>
+                        <p class="text-slate-600 leading-relaxed">This is a classic "Gamma trap." Web browsers, monitors, and design software default to the <strong>sRGB color space</strong> (which applies a Gamma curve of roughly 2.2). Unreal Engine, however, uses Physically Based Rendering (PBR), where lighting math must be calculated in <strong>Linear Space</strong>.</p>
+                        <p class="text-slate-600 leading-relaxed">If you feed sRGB values directly into the engine as if they were linear, the engine applies <em>another</em> gamma correction when outputting to your screen. This "double gamma correction" over-brightens the midtones, resulting in a washed-out look. Our tool performs the inverse math to strip away that Gamma curve so your in-engine colors match your mockups perfectly.</p>
+                    </div>
+
+                    <div class="space-y-3 bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                             <span class="w-2 h-2 bg-blue-500 rounded-full inline-block"></span>
+                            How do I correctly use these extracted values in C++?
+                        </h3>
+                        <p class="text-slate-600 leading-relaxed">The Linear Color floats provided by our tool map directly to the <code>FLinearColor</code> struct in Unreal Engine C++. You shouldn't use <code>FColor</code> (which is meant for 8-bit sRGB). Instead, use the high-precision floats. For example, if the tool outputs (R=0.21, G=0.55, B=0.88, A=1.00):</p>
+                        <div class="bg-slate-900 text-slate-300 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                            <code>// Recommended: Initialize FLinearColor directly</code><br>
+                            <code>FLinearColor MyThemeColor = FLinearColor(0.21f, 0.55f, 0.88f, 1.0f);</code><br>
+                            <br>
+                            <code>// Applying it to a Slate UI Widget</code><br>
+                            <code>MyBorder->SetBorderBackgroundColor(MyThemeColor);</code>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                             <span class="w-2 h-2 bg-green-500 rounded-full inline-block"></span>
+                            Why do colors sometimes look different in UMG compared to Materials?
+                        </h3>
+                        <p class="text-slate-600 leading-relaxed">This usually comes down to color space settings on your nodes or assets. In the Material Editor, when using a <code>Constant3Vector</code> node, the color picker expects you to know whether you're inputting sRGB or Linear values. If you're using values from our tool, ensure you're placing them in the Linear fields. Additionally, if your UI textures are imported into UE5 with the <strong>sRGB checkbox</strong> toggled incorrectly, it will drastically alter how UMG Image widgets render those colors.</p>
+                    </div>
+
+                     <div class="space-y-3 bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                             <span class="w-2 h-2 bg-purple-500 rounded-full inline-block"></span>
+                            Where is my color history saved? Will it sync across devices?
+                        </h3>
+                        <p class="text-slate-600 leading-relaxed">To strictly protect your privacy and ensure lightning-fast load times, all history data relies entirely on your browser's <code>LocalStorage</code>. The data lives only on your local hard drive. <strong>We do not use databases, and your data is never uploaded to the cloud.</strong> Consequently, if you switch computers, use Incognito mode, or clear your browser cache, your history will be lost.</p>
+                    </div>
+
+                </div>
+            </section>
+
+        </article>
+
+        <footer class="text-center text-xs text-slate-400 space-y-2">
+            <p>&copy; 2026 UE5 Color Converter. All rights reserved.</p>
+            <p class="space-x-3">
+                <a href="index.html" class="hover:text-blue-500 transition-colors">Home</a>
+                <span>|</span>
+                <a href="about.html" class="hover:text-blue-500 transition-colors">About Us</a>
+                <span>|</span>
+                <a href="privacy.html" class="hover:text-blue-500 transition-colors">Privacy Policy</a>
+            </p>
+        </footer>
+
+    </main>
+</body>
+</html>
