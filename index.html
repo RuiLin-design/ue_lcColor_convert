@@ -107,6 +107,11 @@
         .dropdown-enter-active, .dropdown-leave-active { transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
         .dropdown-enter-from, .dropdown-leave-to { opacity: 0; transform: translateY(-8px) scale(0.96); }
 
+        .modal-enter-active, .modal-leave-active { transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
+        .modal-enter-from, .modal-leave-to { opacity: 0; transform: scale(0.95); }
+        .overlay-enter-active, .overlay-leave-active { transition: opacity 0.3s ease; }
+        .overlay-enter-from, .overlay-leave-to { opacity: 0; }
+
         @media (max-width: 768px) { :root { font-size: 16px; } #sv-box { height: 200px; } }
     </style>
 </head>
@@ -124,11 +129,11 @@
             </nav>
 
             <header class="flex justify-between items-center px-2 pt-2">
-                <h1 class="text-[13.2px] font-black text-slate-400 uppercase tracking-[0.25em] leading-none">UE5 Color Convert V1.1</h1>
+                <h1 class="text-[13.2px] font-black text-slate-400 uppercase tracking-[0.25em] leading-none">UE5 Color Convert V1.2</h1>
                 
                 <div class="lang-dropdown" @click.stop="isLangDropdownOpen = !isLangDropdownOpen">
                     <button class="lang-btn apple-ease apple-active" aria-label="Select Language">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                         <span>{{ currentLangObj.name }}</span>
                     </button>
                     <transition name="dropdown">
@@ -180,7 +185,7 @@
                     <div class="pt-3 border-t border-slate-50">
                         <div class="flex justify-between items-center mb-2">
                             <h3 class="text-[10.8px] font-black text-slate-400 uppercase tracking-widest">{{ t.color_history }}</h3>
-                            <button @click="clearHistory" class="text-[10.8px] font-bold text-slate-400 hover:text-red-500 uppercase apple-ease apple-active">{{ t.clear_history }}</button>
+                            <button @click="showClearConfirm = true" class="text-[10.8px] font-bold text-slate-400 hover:text-red-500 uppercase apple-ease apple-active">{{ t.clear_history }}</button>
                         </div>
                         <div class="flex flex-wrap gap-2">
                             <div v-for="item in colorHistory" :key="item.hex + item.a + Math.random()" @click="applyHistory(item)" class="color-history-item checkerboard apple-ease">
@@ -196,7 +201,7 @@
                         <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
                             <span class="text-[12px] font-black text-slate-500 tracking-[0.2em] uppercase">{{ t.linear_color }}</span>
                             <button @click="copy('linear')" aria-label="Copy Linear Color" class="text-slate-500 hover:text-white apple-ease apple-active">
-                                <svg class="w-5 h-5" :class="{ 'copy-success': copyStatus === 'linear' }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                <svg class="w-[30px] h-[30px]" :class="{ 'copy-success': copyStatus === 'linear' }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                             </button>
                         </div>
                         <div class="grid grid-cols-4 gap-2 md:gap-3">
@@ -237,7 +242,7 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-[28.8px] font-black text-slate-400">{{ t.rgb }}</span>
                                 <button @click="copy('srgb')" aria-label="Copy RGB" class="text-slate-300 hover:text-blue-500 apple-ease apple-active">
-                                    <svg class="w-4 h-4" :class="{ 'copy-success': copyStatus === 'srgb' }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                    <svg class="w-6 h-6" :class="{ 'copy-success': copyStatus === 'srgb' }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                                 </button>
                             </div>
                             <div class="grid grid-cols-4 gap-1.5 md:gap-2">
@@ -288,7 +293,7 @@
                                     </div>
                                 </div>
                                 <button @click="copy('hex')" aria-label="Copy HEX" class="text-slate-300 hover:text-blue-500 apple-ease apple-active">
-                                    <svg class="w-4 h-4" :class="{ 'copy-success': copyStatus === 'hex' }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                    <svg class="w-6 h-6" :class="{ 'copy-success': copyStatus === 'hex' }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                                 </button>
                             </div>
                             <div class="grid grid-cols-2 gap-2 mt-2 pt-[14px]">
@@ -311,7 +316,7 @@
                         <div class="bg-white p-4 rounded-[1.8rem] border border-slate-200 shadow-sm space-y-3">
                             <div class="flex justify-between items-center">
                                 <span class="text-[28.8px] font-black text-slate-400">{{ t.hsl }}</span>
-                                <button @click="copy('hsl')" aria-label="Copy HSL" class="text-slate-300 hover:text-blue-500 apple-ease apple-active"><svg class="w-4 h-4" :class="{ 'copy-success': copyStatus === 'hsl' }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button>
+                                <button @click="copy('hsl')" aria-label="Copy HSL" class="text-slate-300 hover:text-blue-500 apple-ease apple-active"><svg class="w-6 h-6" :class="{ 'copy-success': copyStatus === 'hsl' }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button>
                             </div>
                             <div class="grid grid-cols-4 gap-1.5 md:gap-2">
                                 <div>
@@ -358,7 +363,7 @@
                         <div class="bg-white p-4 rounded-[1.8rem] border border-slate-200 shadow-sm space-y-3">
                             <div class="flex justify-between items-center">
                                 <span class="text-[28.8px] font-black text-slate-400">{{ t.hsv }}</span>
-                                <button @click="copy('hsv')" aria-label="Copy HSV" class="text-slate-300 hover:text-blue-500 apple-ease apple-active"><svg class="w-4 h-4" :class="{ 'copy-success': copyStatus === 'hsv' }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button>
+                                <button @click="copy('hsv')" aria-label="Copy HSV" class="text-slate-300 hover:text-blue-500 apple-ease apple-active"><svg class="w-6 h-6" :class="{ 'copy-success': copyStatus === 'hsv' }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></button>
                             </div>
                             <div class="grid grid-cols-4 gap-1.5 md:gap-2">
                                 <div>
@@ -462,7 +467,7 @@
                         <div class="shrink-0 w-full md:w-auto">
                             <div class="bg-white text-slate-900 font-black py-3.5 px-8 rounded-2xl flex items-center justify-center gap-2 group-hover:bg-blue-400 group-hover:text-white transition-all shadow-lg active:scale-95">
                                 <span>{{ t.ad_btn }}</span>
-                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                                 </svg>
                             </div>
@@ -487,6 +492,26 @@
                     <a href="privacy.html" class="hover:text-blue-500 apple-ease">{{ t.privacy_policy }}</a>
                 </p>
             </footer>
+
+            <transition name="overlay">
+                <div v-if="showClearConfirm" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+                    <transition name="modal" appear>
+                        <div class="bg-white/90 backdrop-blur-xl w-full max-w-xs rounded-[1.5rem] shadow-2xl overflow-hidden border border-white/20">
+                            <div class="p-6 text-center space-y-2">
+                                <h3 class="text-[1.1rem] font-black text-slate-800">{{ t.clear_title || '确认清空记录？' }}</h3>
+                                <p class="text-[0.85rem] text-slate-500 leading-relaxed">{{ t.clear_desc || '此操作无法撤销，所有本地保存的颜色将被删除。' }}</p>
+                            </div>
+                            <div class="flex border-t border-slate-200/50 bg-slate-50/50">
+                                <button @click="showClearConfirm = false" class="flex-1 py-3.5 text-[0.95rem] font-bold text-blue-500 hover:bg-slate-100/50 active:bg-slate-200/50 transition-colors">{{ t.cancel || '取消' }}</button>
+                                <div class="w-[1px] bg-slate-200/50"></div>
+                                <button @click="confirmClearHistory" class="flex-1 py-3.5 text-[0.95rem] font-bold text-red-500 hover:bg-red-50 active:bg-red-100 transition-colors">{{ t.confirm || '确认清空' }}</button>
+                            </div>
+                        </div>
+                    </transition>
+                </div>
+            </transition>
+
+
         </main>
     </div>
     <script src="index.js"></script>
