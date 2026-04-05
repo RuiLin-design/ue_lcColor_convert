@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Deep Dive into UE5 Color Space | UE5 Dev Blog</title>
+    <meta name="description" content="Technical explanation on Linear Color vs sRGB, Gamma correction, and how to fix washed-out UI colors in Unreal Engine 5.">
+    
+    <script src="https://cdn.tailwindcss.com/"></script>
+    
+    <style>
+        :root { font-size: 16px; } 
+        /* 100% commercially safe system font stack. No licensing issues. */
+        body { 
+            background-color: #f8fafc; 
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        }
+    </style>
+</head>
+<body class="p-4 text-slate-800">
+
+    <main class="max-w-4xl mx-auto space-y-6 pb-12 pt-4">
+        
+        <nav class="flex justify-between items-center px-2">
+            <a href="article.html" class="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back
+            </a>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">UE5 Dev Blog</h1>
+        </nav>
+
+        <article class="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm space-y-10">
+            
+            <header class="space-y-4 border-b border-slate-100 pb-8 text-center">
+                <div class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">Unreal Engine 5 / UI Dev</div>
+                <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight">Deep Dive into UE5 Color Space:<br>The Love-Hate Relationship Between Linear Color and sRGB</h1>
+                <div class="flex items-center justify-center gap-3 text-slate-500 text-sm mt-6">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix" alt="Author" class="w-10 h-10 rounded-full bg-slate-100">
+                    <div class="text-left">
+                        <div class="font-bold text-slate-700">UI/UX Technical Artist</div>
+                        <div>Published Apr 5, 2026</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="space-y-4">
+                <p class="text-xl text-slate-600 font-medium leading-relaxed">
+                    In Unreal Engine 5 (UE5) UI development and material creation, inaccurate colors are a perpetual issue. When UI designers hand off hexadecimal (HEX) colors from Figma, simply plugging them into UE5 often results in colors that look "washed out" or "over-brightened." The ultimate culprit behind this is the discrepancy in <strong>Color Space</strong>.
+                </p>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-2xl font-black text-slate-800">Why Does the Color Shift Occur?</h2>
+                <p class="text-slate-600 leading-relaxed">To understand this, we need to look at how monitors and game engines fundamentally interpret "light":</p>
+                <ul class="list-disc pl-6 space-y-2 text-slate-600">
+                    <li><strong>sRGB (Gamma 2.2):</strong> To align with human visual perception (we are far more sensitive to details in shadows), our monitors default to using a non-linear sRGB curve to display colors. Colors in Figma and Photoshop are natively based on this space.</li>
+                    <li><strong>Linear Color (Linear Space):</strong> Modern game engines like UE5 rely heavily on <strong>Physically Based Rendering (PBR)</strong>. To ensure that lighting and color blending are mathematically and physically precise, the engine forces all internal calculations to be processed in a "Linear Space."</li>
+                </ul>
+                <p class="text-slate-600 leading-relaxed">
+                    If you feed an sRGB value like <code>RGB(128, 128, 128)</code> directly into a UE5 material node without conversion, the engine treats it as pure linear physical light intensity. When it eventually outputs to your screen, it gets hit with the monitor's Gamma curve <em>again</em>, causing the colors to appear pale and desaturated.
+                </p>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-2xl font-black text-slate-800">A Historical Artifact: Why Was Gamma Invented?</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    Many wonder: if linear space calculation is more accurate, why didn't we just use it from the beginning? This is actually a "technical debt" left over from legacy CRT monitors. Early cathode-ray tube displays had a natural, non-linear relationship (roughly a 2.2 power curve) between input voltage and output brightness.
+                </p>
+                <p class="text-slate-600 leading-relaxed">
+                    Coincidentally, human perception of brightness is also non-linear (Weber-Fechner law). We are extremely sensitive to changes in dark areas, but somewhat oblivious to variations in highlights. Consequently, engineers embraced this "flaw" and used this non-linear characteristic (Gamma encoding) to store images, dedicating precious data bandwidth to shadow details. This standard has persisted to this day, becoming the sRGB standard we both love and hate.
+                </p>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-2xl font-black text-slate-800">The Core: Reverse Gamma Correction</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    To make colors in the game look exactly like your design mockups, we must perform a <strong>Reverse Gamma Correction (sRGB to Linear)</strong>. In the underlying code, this isn't just multiplying by a simple constant; it involves a standard mathematical piecewise function. Here is the core conversion algorithm in JavaScript:
+                </p>
+                <div class="bg-[#0f172a] text-[#38bdf8] p-4 rounded-xl font-mono text-sm overflow-x-auto my-4 shadow-inner">
+<pre><code>// Converts 0-1 range sRGB channel values to Linear values
+function sRGBToLinear(s) {
+    if (s <= 0.04045) {
+        return s / 12.92;
+    } else {
+        return Math.pow((s + 0.055) / 1.055, 2.4);
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="space-y-6 mt-8">
+                <h2 class="text-2xl font-black text-slate-800">Practical Guidelines in Unreal Engine</h2>
+                <p class="text-slate-600 leading-relaxed">When you receive UI slices or color palettes, never punch in numbers blindly. Depending on your development context, the approach varies:</p>
+                
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">1. Material Editor</h3>
+                    <p class="text-slate-600 leading-relaxed">If you've imported a UI texture, you must verify the <code>sRGB</code> checkbox in the texture details panel.</p>
+                    <ul class="list-disc pl-6 space-y-2 text-slate-600">
+                        <li><strong>Base Color Maps:</strong> Visual textures like UI icons and color illustrations <strong>must have</strong> <code>sRGB</code> checked. The engine will automatically convert them to Linear upon sampling.</li>
+                        <li><strong>Data Maps:</strong> Textures used to store physical data like Mask, Roughness, Metallic, or Normal maps <strong>must have</strong> <code>sRGB</code> unchecked. Otherwise, the engine incorrectly applies Gamma correction, completely breaking the material's physical properties.</li>
+                    </ul>
+                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg text-sm text-amber-800">
+                        <strong>💡 TA Tip:</strong> If you are using a <code>VectorParameter</code> (color node) directly in a material, notice the small <code>sRGB</code> checkbox in the upper right corner of the color picker. Check it if you are pasting a Figma HEX code; uncheck it if you are inputting pure physical light intensity.
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">2. C++ and Blueprints</h3>
+                    <p class="text-slate-600 leading-relaxed">At the code level, you can use the <code>Make Color</code> node in Blueprints (which handles the conversion under the hood). In C++, the standard practice is to parse the sRGB HEX string first, and then convert it into an <code>FLinearColor</code> struct for rendering:</p>
+                    <div class="bg-[#0f172a] text-[#38bdf8] p-4 rounded-xl font-mono text-sm overflow-x-auto shadow-inner">
+<pre><code>// Create accurate linear color from designer's HEX string
+FColor sRGBColor = FColor::FromHex(TEXT("3EAE70"));
+FLinearColor LinearColor = FLinearColor(sRGBColor);</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-4 border-t border-slate-100 pt-8">
+                <h2 class="text-2xl font-black text-slate-800">The Final Boss: ACES Tonemapping and UI Color Shift</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    Even if you perfectly master the sRGB to Linear conversion, you might still notice something: <strong>When the UI is rendered in the 3D world, the colors are still wrong!</strong>
+                </p>
+                <p class="text-slate-600 leading-relaxed">
+                    This introduces UE5's other final boss — <strong>ACES (Academy Color Encoding System) Cinematic Tonemapping</strong>. To give the scene a cinematic feel, UE5's Post Process Volume applies a final "color grade" to all rendered light. This color grading causes extremely vivid colors (especially high-saturation reds and blues) to shift.
+                </p>
+                <h3 class="text-lg font-bold text-slate-800 mt-4">How to fix this?</h3>
+                <ol class="list-decimal pl-6 space-y-2 text-slate-600">
+                    <li><strong>For 2D UI (UMG):</strong> UMG is rendered by default overlaid on top of the screen after the scene is finished. It is <strong>unaffected</strong> by scene post-processing, so as long as your colors are correct in UMG, they will display correctly.</li>
+                    <li><strong>For 3D UI (e.g., VR interfaces, world-space widgets):</strong> If your UI is placed in the scene as a 3D object, it will be heavily impacted by ACES. The solution is to change the UI material's <code>Material Domain</code> to <strong>User Interface</strong>. This forces the material to bypass complex scene lighting and tonemapping, outputting the raw, original color.</li>
+                </ol>
+            </section>
+
+            <div class="border-t border-slate-100 pt-8 text-center">
+                <p class="text-slate-600 italic">
+                    Hopefully, this article helps you completely demystify colors in Unreal Engine. Only by keeping the underlying data pure and physically precise can we render the most perfect visuals!
+                </p>
+            </div>
+
+        </article>
+
+    </main>
+
+</body>
+</html>

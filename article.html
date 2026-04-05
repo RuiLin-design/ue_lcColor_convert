@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3374799630888227" crossorigin="anonymous"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9RDEMD2Q8L"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9RDEMD2Q8L');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Articles & Guides | UE5 Color Converter</title>
+    <meta name="description" content="Technical deep dives, tutorials, and articles on Unreal Engine 5 UI development, color math, and material setup.">
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <style>
+        :root { font-size: 16px; } 
+        body { background-color: #f8fafc; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    </style>
+</head>
+<body class="p-4 text-slate-800">
+
+    <main id="articles-app" class="max-w-4xl mx-auto space-y-6 pb-12 pt-4">
+        
+        <nav class="flex justify-between items-center px-2">
+            <a href="index.html" class="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Converter
+            </a>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Articles</h1>
+        </nav>
+
+        <article class="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm space-y-10">
+            
+            <header class="space-y-4 border-b border-slate-100 pb-8 text-center md:text-left">
+                <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Technical Articles</h1>
+                <p class="text-lg text-slate-500 font-medium">Deep dives, best practices, and mathematical explanations for Unreal Engine UI and Technical Artists.</p>
+            </header>
+
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <a v-for="article in articles" :key="article.id" :href="article.link" class="block group bg-slate-50 border border-slate-100 rounded-3xl p-6 md:p-8 hover:bg-white hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 transition-all duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                        <div :class="`inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${article.badgeColor}`">
+                            {{ article.category }}
+                        </div>
+                        <span class="text-xs font-bold text-slate-400">{{ article.date }}</span>
+                    </div>
+                    <h2 class="text-xl font-black text-slate-800 mb-3 group-hover:text-blue-600 transition-colors leading-tight">
+                        {{ article.title }}
+                    </h2>
+                    <p class="text-sm text-slate-500 mb-6 line-clamp-3 leading-relaxed">
+                        {{ article.excerpt }}
+                    </p>
+                    <div class="flex items-center text-sm font-bold text-blue-500 group-hover:text-blue-600">
+                        Read Article 
+                        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </div>
+                </a>
+
+            </section>
+
+        </article>
+
+        <footer class="text-center text-xs text-slate-400 space-y-2">
+            <p>&copy; 2026 UE5 Color Converter. All rights reserved.</p>
+            <p class="space-x-3">
+                <a href="index.html" class="hover:text-blue-500 transition-colors">Home</a>
+                <span>|</span>
+                <a href="about.html" class="hover:text-blue-500 transition-colors">About Us</a>
+                <span>|</span>
+                <a href="help.html" class="hover:text-blue-500 transition-colors">Help</a>
+                <span>|</span>
+                <a href="privacy.html" class="hover:text-blue-500 transition-colors">Privacy Policy</a>
+            </p>
+        </footer>
+
+    </main>
+
+    <script>
+        const { createApp, ref } = Vue;
+
+        createApp({
+            setup() {
+                const articles = ref([
+                    {
+                        id: 1,
+                        title: "Deep Dive into UE5 Color Space: Linear vs sRGB",
+                        excerpt: "In Unreal Engine UI development, inaccurate colors are a perpetual issue. Learn why HEX colors from Figma look washed out, the history of Gamma correction, and how to mathematically fix it.",
+                        category: "Color Space",
+                        date: "Apr 5, 2026",
+                        link: "article1.html",
+                        badgeColor: "bg-blue-100 text-blue-600" 
+                    },
+                    {
+                        id: 2,
+                        title: "Bypassing ACES Tonemapping for 3D UI Widgets",
+                        excerpt: "When placing UMG widgets in 3D world space (like VR interfaces), UE5's post-processing can aggressively alter your brand colors. Discover how to use the 'User Interface' material domain to output raw colors.",
+                        category: "Rendering",
+                        date: "Apr 5, 2026",
+                        link: "article2.html",
+                        badgeColor: "bg-purple-100 text-purple-600"
+                    },
+                    {
+                        id: 3,
+                        title: "More...",
+                        excerpt: "",
+                        category: "",
+                        date: "Coming Soon",
+                        link: "",
+                        badgeColor: "bg-emerald-100 text-emerald-600"
+                    }
+                ]);
+
+                return {
+                    articles
+                };
+            }
+        }).mount('#articles-app');
+    </script>
+</body>
+</html>

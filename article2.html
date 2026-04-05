@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Bypassing ACES Tonemapping for 3D UI | UE5 Dev Blog</title>
+    <meta name="description" content="Learn how to bypass Unreal Engine's ACES tonemapping to fix brand color shifts in 3D world-space UMG widgets and VR interfaces.">
+    
+    <script src="https://cdn.tailwindcss.com/"></script>
+    
+    <style>
+        :root { font-size: 16px; } 
+        /* 100% commercially safe system font stack. No licensing issues. */
+        body { 
+            background-color: #f8fafc; 
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        }
+    </style>
+</head>
+<body class="p-4 text-slate-800">
+
+    <main class="max-w-4xl mx-auto space-y-6 pb-12 pt-4">
+        
+        <nav class="flex justify-between items-center px-2">
+            <a href="article.html" class="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back
+            </a>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">UE5 Dev Blog</h1>
+        </nav>
+
+        <article class="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm space-y-10">
+            
+            <header class="space-y-4 border-b border-slate-100 pb-8 text-center">
+                <div class="inline-block bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">Unreal Engine 5 / Rendering</div>
+                <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight">Bypassing ACES Tonemapping:<br>Fixing Color Shifts in 3D UI Widgets</h1>
+                <div class="flex items-center justify-center gap-3 text-slate-500 text-sm mt-6">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix" alt="Author" class="w-10 h-10 rounded-full bg-slate-100">
+                    <div class="text-left">
+                        <div class="font-bold text-slate-700">UI/UX Technical Artist</div>
+                        <div>Published Apr 12, 2026</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="space-y-4">
+                <p class="text-xl text-slate-600 font-medium leading-relaxed">
+                    You've carefully converted your sRGB HEX codes to Linear Space, and your 2D screen-space menus look flawless. But the moment you attach that same UMG widget to an actor in the 3D world—like a VR wrist menu, a holographic floating screen, or a diegetic computer terminal—your brand colors suddenly look completely wrong. Pure blues turn into cyan, and bright reds shift into neon orange. Welcome to the ACES Tonemapping trap.
+                </p>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-2xl font-black text-slate-800">The Rendering Pipeline Divide</h2>
+                <p class="text-slate-600 leading-relaxed">To solve this, we must first understand how Unreal Engine prioritizes rendering passes:</p>
+                <ul class="list-disc pl-6 space-y-2 text-slate-600">
+                    <li><strong>2D Screen-Space UI (Viewport UMG):</strong> These widgets are rendered at the very end of the pipeline. They sit directly on top of the final rendered frame and completely bypass the scene's lighting, shadows, and post-processing. What you input is exactly what you get.</li>
+                    <li><strong>3D World-Space UI (Widget Components):</strong> When a widget is placed in the 3D world, it is treated like any other static mesh. It gets rendered <em>during</em> the scene pass. Consequently, it is subjected to the camera's exposure, bloom, and crucially, the Post Process Volume's color grading and tonemapping.</li>
+                </ul>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-2xl font-black text-slate-800">The ACES Color Shift Explained</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    Unreal Engine 5 defaults to using the <strong>ACES (Academy Color Encoding System)</strong> filmic tonemapper. ACES is fantastic for achieving photorealistic, cinematic renders because it mimics how real film handles overexposure—it gently rolls off highlights and desaturates extremely bright colors.
+                </p>
+                <p class="text-slate-600 leading-relaxed">
+                    However, ACES is famously hostile to highly saturated "digital" colors. A pure brand blue <code>(R=0, G=0, B=1)</code> pushed through ACES will skew towards magenta or cyan. A pure digital red will shift towards orange. For UI designers who require absolute brand color accuracy, this filmic shift is unacceptable.
+                </p>
+            </section>
+
+            <section class="space-y-6 mt-8">
+                <h2 class="text-2xl font-black text-slate-800">The Ultimate Fix: Material Domain</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    You don't need to turn off ACES for your whole game (which would ruin your 3D graphics). Instead, you need to tell the engine to treat your specific 3D widget material differently. We do this by changing the <strong>Material Domain</strong>.
+                </p>
+                
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">Step 1: Create a Custom Retainer Material</h3>
+                    <p class="text-slate-600 leading-relaxed">By default, Widget Components use a built-in material (like <code>Widget3DPassThrough</code>). To bypass lighting, you need to create your own material and apply it to the Widget Component.</p>
+                    
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-3">
+                        <ul class="list-decimal pl-5 space-y-2 text-slate-700 font-medium">
+                            <li>Create a new Material in the Content Browser.</li>
+                            <li>In the Details panel, change the <strong>Material Domain</strong> from <code>Surface</code> to <code>User Interface</code>.</li>
+                            <li>Change the <strong>Blend Mode</strong> to <code>Translucent</code> (or <code>Masked</code> if you don't need partial transparency).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">Step 2: Connecting the Nodes</h3>
+                    <p class="text-slate-600 leading-relaxed">Because the domain is now "User Interface", your main material node will look much smaller. It only accepts <code>Final Color</code> and <code>Screen Position</code>.</p>
+                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg text-sm text-amber-800">
+                        <strong>⚠️ The Secret Sauce:</strong> When a Material is set to the 'User Interface' domain, Unreal Engine mathematically guarantees that whatever color is fed into the 'Final Color' pin will bypass the ACES tonemapper and output directly to the monitor's display buffer.
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">Simply sample your Widget's Render Target (using a <code>TextureSampleParameter2D</code>) and plug the RGB into <code>Final Color</code>, and the Alpha into the Opacity pin.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">Step 3: Assigning in the Widget Component</h3>
+                    <p class="text-slate-600 leading-relaxed">Finally, select your Widget Component in your Actor's blueprint hierarchy:</p>
+                    <div class="bg-[#0f172a] text-[#38bdf8] p-4 rounded-xl font-mono text-sm overflow-x-auto shadow-inner">
+<pre><code>// In the Details Panel of your Widget Component:
+1. Locate the 'Rendering' section.
+2. Find the 'Material' override property.
+3. Assign the Custom UI Material you just created.
+4. Ensure 'Tint Color and Opacity' is set to purely White (1,1,1,1).</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-4 border-t border-slate-100 pt-8">
+                <h2 class="text-2xl font-black text-slate-800">Summary: The Golden Rules of UE5 Colors</h2>
+                <ul class="list-disc pl-6 space-y-2 text-slate-600">
+                    <li><strong>2D Viewport UI:</strong> Always bypasses post-processing. Just ensure your HEX to Linear conversion is accurate.</li>
+                    <li><strong>3D Widget (Surface Domain):</strong> Reacts to lights, casts shadows, and gets distorted by ACES Tonemapping. Good for grimy, diegetic screens (like a broken TV in a horror game).</li>
+                    <li><strong>3D Widget (User Interface Domain):</strong> Unlit, ignores shadows, and completely bypasses ACES. Essential for crisp, brand-accurate VR menus and AR overlays.</li>
+                </ul>
+            </section>
+
+            <div class="border-t border-slate-100 pt-8 text-center">
+                <p class="text-slate-600 italic">
+                    With your material domain set correctly, your 3D widgets will now boast the exact same vivid, accurate colors as your 2D designs. Happy developing!
+                </p>
+            </div>
+
+        </article>
+<!-- 
+        <footer class="text-center text-xs text-slate-400 space-y-2 mt-8">
+            <p>&copy; 2026 UE5 Dev Blog. All rights reserved.</p>
+            <p class="space-x-3">
+                <a href="index.html" class="hover:text-blue-500 transition-colors">Home</a>
+                <span>|</span>
+                <a href="about.html" class="hover:text-blue-500 transition-colors">About Us</a>
+                <span>|</span>
+                <a href="help.html" class="hover:text-blue-500 transition-colors">Help Center</a>
+            </p>
+        </footer> -->
+
+    </main>
+
+</body>
+</html>
