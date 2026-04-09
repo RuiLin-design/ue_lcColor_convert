@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>The Final Mile: Advanced UI Profiling | UE5 Dev Blog</title>
+    <meta name="description" content="A deep dive into Unreal Engine UI profiling tools: Master Unreal Insights and the Widget Reflector to optimize your UMG projects.">
+    
+    <script src="https://cdn.tailwindcss.com/"></script>
+    
+    <style>
+        :root { font-size: 16px; } 
+        /* Strictly maintaining the visual DNA of article2.html */
+        body { 
+            background-color: #f8fafc; 
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        }
+    </style>
+</head>
+<body class="p-4 text-slate-800">
+
+    <main class="max-w-4xl mx-auto space-y-6 pb-12 pt-4">
+        
+        <nav class="flex justify-between items-center px-2">
+            <a href="article.html" class="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back
+            </a>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">UE5 Dev Blog</h1>
+        </nav>
+
+        <article class="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm space-y-12">
+            
+            <header class="space-y-4 border-b border-slate-100 pb-8 text-center">
+                <div class="inline-block bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">Unreal Engine 5 / Advanced Profiling</div>
+                <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">The Final Mile:<br>Advanced UI Profiling & Debugging</h1>
+                <div class="flex items-center justify-center gap-3 text-slate-500 text-sm mt-6">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix" alt="Author" class="w-10 h-10 rounded-full bg-slate-100">
+                    <div class="text-left">
+                        <div class="font-bold text-slate-700">Felix / UI Technical Artist</div>
+                        <div>Published Apr 9, 2026</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="space-y-4">
+                <p class="text-xl text-slate-600 font-medium leading-relaxed">
+                    In the final stages of UI development, you may encounter elusive issues: Why does opening the inventory cause a slight frame drop? Why is there a micro-latency in button response? In a <strong>commercial-grade</strong> project, we don't rely on guesswork. <strong>UI Profiling</strong> is the scientific process of sampling data to identify "Performance Killers." Mastering these tools is the leap from a Senior Developer to a true UI Architect.
+                </p>
+            </section>
+
+            <section class="space-y-6">
+                <h2 class="text-2xl font-black text-slate-800">Phase 1: Slate Tracing in Unreal Insights</h2>
+                <p class="text-slate-600 text-sm leading-relaxed">Unreal Insights is the most powerful performance tracking tool in UE5, capable of pinpointing the exact cost of Slate rendering within every frame.</p>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-4">
+                    <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Diagnostic Workflow:</h4>
+                    <ul class="space-y-4 text-sm text-slate-700">
+                        <li class="flex items-start gap-4">
+                            <span class="bg-slate-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] shrink-0 mt-0.5">01</span>
+                            <div>
+                                <strong>Enable Tracing:</strong> Launch your game with the command-line argument <code>-trace=slate,ui</code>.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="bg-slate-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] shrink-0 mt-0.5">02</span>
+                            <div>
+                                <strong>Locating Spikes:</strong> In the Insights interface, navigate to the <strong>Slate Tab</strong>. Look for red vertical spikes—these typically represent long <code>Prepass</code> or <code>OnPaint</code> calls that exceed your frame budget.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <h2 class="text-2xl font-black text-slate-800">Phase 2: Deep Inspection with the Widget Reflector</h2>
+                <p class="text-slate-600 leading-relaxed">When taking over a complex legacy project, navigating thousands of widgets can be overwhelming. The <strong>Widget Reflector</strong> is your eye in the sky.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 bg-slate-50 flex items-center justify-center rounded-xl font-bold text-slate-500">A</div>
+                        <h3 class="text-xl font-black text-slate-900">Locating Widget Sources</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">Press <code>Ctrl + Shift + W</code> and click any element on screen. The Reflector identifies exactly which Blueprint the widget belongs to and its hierarchy depth instantly.</p>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 bg-zinc-50 flex items-center justify-center rounded-xl font-bold text-zinc-500">B</div>
+                        <h3 class="text-xl font-black text-slate-900">Detecting Invalidation Frequency</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">Enable <strong>Invalidation Debugging</strong> to see which widgets are redrawing. Constant red flashes indicate cache invalidation—the primary source of performance leaks.</p>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg text-sm text-amber-800">
+                    <strong>⚠️ Architect's Insight:</strong> Most performance jitters aren't caused by heavy assets, but by <strong>Blueprint Binding</strong>. If you see high volumes of <code>Attribute Binding</code> executing every frame in the Reflector, refactor them into event-driven patterns like MVVM immediately.
+                </div>
+            </section>
+
+            <section class="space-y-6 mt-8">
+                <h2 class="text-2xl font-black text-slate-800">Phase 3: Essential Console Commands</h2>
+                <p class="text-slate-600 text-sm leading-relaxed">In both Editor and Packaged builds, these commands provide instant "Ocular Vision" for UI performance.</p>
+
+                <div class="bg-[#0f172a] text-[#38bdf8] p-6 rounded-xl font-mono text-sm overflow-x-auto shadow-inner leading-relaxed">
+<pre><code>// UI Debugging Command Set:
+1. Stat Slate          // View Slate rendering thread time
+2. Stat Game           // Confirm if UI logic is dragging down the Game thread
+3. Slate.ShowOverdraw  // Enable Overdraw mode (darker purple = more waste)
+4. ToggleDebugView     // Toggle UMG bounding box visibility</code></pre>
+                </div>
+            </section>
+
+            <section class="space-y-4 border-t border-slate-100 pt-8">
+                <h2 class="text-2xl font-black text-slate-800">The Ultimate Philosophy of UI Optimization</h2>
+                <ul class="list-disc pl-6 space-y-2 text-slate-600">
+                    <li><strong>Data Over Intuition:</strong> Never optimize blindly. Take trace samples and focus on the slowest 1% for the highest ROI.</li>
+                    <li><strong>Flat Hierarchies:</strong> Minimize nested <code>Overlays</code> and <code>Vertical Boxes</code>; each layer adds to the layout calculation overhead.</li>
+                    <li><strong>Event-Driven Refresh:</strong> Completely abandon Tick and attribute binding. UI should only refresh when data actually changes.</li>
+                </ul>
+            </section>
+
+            <div class="border-t border-slate-100 pt-8 text-center">
+                <p class="text-slate-600 italic">
+                    Congratulations on completing the UE5 UI Architecture Series. You now possess the power to build breathtaking interfaces and the industrial vision to ensure they run flawlessly at scale.
+                </p>
+            </div>
+
+        </article>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Global Ready: UI Localization & Reflow | UE5 Dev Blog</title>
+    <meta name="description" content="Master the art of UE5 UI localization: From the Localization Dashboard to handling dynamic text reflow and composite fonts.">
+    
+    <script src="https://cdn.tailwindcss.com/"></script>
+    
+    <style>
+        :root { font-size: 16px; } 
+        /* Strictly maintaining the visual DNA of article2.html */
+        body { 
+            background-color: #f8fafc; 
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        }
+    </style>
+</head>
+<body class="p-4 text-slate-800">
+
+    <main class="max-w-4xl mx-auto space-y-6 pb-12 pt-4">
+        
+        <nav class="flex justify-between items-center px-2">
+            <a href="article.html" class="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back
+            </a>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">UE5 Dev Blog</h1>
+        </nav>
+
+        <article class="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm space-y-12">
+            
+            <header class="space-y-4 border-b border-slate-100 pb-8 text-center">
+                <div class="inline-block bg-teal-50 text-teal-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">Unreal Engine 5 / Localization</div>
+                <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">Going Global:<br>Localization Workflows & Dynamic Reflow</h1>
+                <div class="flex items-center justify-center gap-3 text-slate-500 text-sm mt-6">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix" alt="Author" class="w-10 h-10 rounded-full bg-slate-100">
+                    <div class="text-left">
+                        <div class="font-bold text-slate-700">Felix / UI Technical Artist</div>
+                        <div>Published Apr 9, 2026</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="space-y-4">
+                <p class="text-xl text-slate-600 font-medium leading-relaxed">
+                    In high-end UI development, hardcoding text is a critical error. A truly professional project must possess <strong>Cultural Awareness</strong>. When your UI switches from English to German or French, text length can expand by 30% to 200%. How do you keep buttons from breaking? How do you handle complex CJK characters? This guide will help you build an industrial-grade localization system.
+                </p>
+            </section>
+
+            <section class="space-y-6">
+                <h2 class="text-2xl font-black text-slate-800">Phase 1: Activating the Dashboard</h2>
+                <p class="text-slate-600 text-sm leading-relaxed">Unreal Engine’s built-in Localization Dashboard is the central command for all translation management.</p>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-4">
+                    <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Action Checklist:</h4>
+                    <ul class="space-y-4 text-sm text-slate-700">
+                        <li class="flex items-start gap-4">
+                            <span class="bg-teal-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] shrink-0 mt-0.5">01</span>
+                            <div>
+                                <strong>Gathering Text:</strong> Go to Tools -> Localization Dashboard. Click "Gather Text." The engine will scan all <code>FText</code> variables across your UMGs.
+                                <p class="text-xs text-slate-400 mt-1">Note: Always use FText over String; FText supports localization IDs and display caching.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="bg-teal-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] shrink-0 mt-0.5">02</span>
+                            <div>
+                                <strong>Adding Cultures:</strong> Click "Add New Culture" to include target languages (e.g., German, Japanese).
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <h2 class="text-2xl font-black text-slate-800">Phase 2: Fixing "UI Overrun" via Dynamic Reflow</h2>
+                <p class="text-slate-600 leading-relaxed">A common mistake is setting fixed widths for buttons. In a localized project, you must master <strong>Auto-Slot</strong> and <strong>Wrapping</strong>.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 bg-teal-50 flex items-center justify-center rounded-xl font-bold text-teal-500">A</div>
+                        <h3 class="text-xl font-black text-slate-900">Enable Size To Content</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">For button components, enable <code>Size To Content</code>. This allows the button background to expand horizontally based on the translated text length rather than clipping it.</p>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 bg-sky-50 flex items-center justify-center rounded-xl font-bold text-sky-500">B</div>
+                        <h3 class="text-xl font-black text-slate-900">Automatic Wrapping</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">In dialogue boxes, enable <code>Auto Wrap Text</code>. This ensures that when a word in German is exceptionally long, it wraps to the next line instead of being cut off.</p>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg text-sm text-amber-800">
+                    <strong>⚠️ Localization Secret:</strong> For Asian languages (CJK), you must configure a <strong>Composite Font</strong>. You can set Roboto for English and Noto Sans as a Fallback for Japanese in a single asset to solve "Tofu" (missing character) issues.
+                </div>
+            </section>
+
+            <section class="space-y-6 mt-8">
+                <h2 class="text-2xl font-black text-slate-800">Phase 3: Real-time Language Switching</h2>
+                <p class="text-slate-600 text-sm leading-relaxed">Don’t force players to restart! Implement a seamless language switch using the Blueprint API.</p>
+
+                <div class="bg-[#0f172a] text-[#38bdf8] p-6 rounded-xl font-mono text-sm overflow-x-auto shadow-inner leading-relaxed">
+<pre><code>// Runtime Culture Switching (Blueprint/C++ API):
+1. [Set Current Culture] (Target: "zh-Hans" or "de")
+2. [Save Config] -> Ensures persistence on next launch
+3. The system broadcasts an update; all FText widgets redraw instantly.</code></pre>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <h2 class="text-2xl font-black text-slate-800">Phase 4: Managing Heavy Font Assets</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    In global projects, font files can be massive. You should use the UE5 <strong>Font Face</strong> system to isolate <code>.ttf</code> assets for optimized loading.
+                </p>
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                    <ol class="list-decimal pl-5 text-sm text-slate-700 space-y-3 font-medium">
+                        <li><strong>Load on Demand:</strong> Use the <code>Asset Manager</code> to load that 20MB CJK font only when the user selects that specific language.</li>
+                        <li><strong>Sub-font Families:</strong> Use <code>Sub-font Family</code> to set dedicated fallback paths for special symbols or emojis.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section class="space-y-4 border-t border-slate-100 pt-8">
+                <h2 class="text-2xl font-black text-slate-800">Golden Rules for Global UI</h2>
+                <ul class="list-disc pl-6 space-y-2 text-slate-600">
+                    <li><strong>Never Concatenate Strings:</strong> Use the <code>Format Text</code> node for structures like "Level: {Num}" instead of using the "+" operator.</li>
+                    <li><strong>Buffer for Expansion:</strong> Always leave at least 20% visual "breathing room" in your UI containers to account for text expansion.</li>
+                    <li><strong>Respect Case Sensitivity:</strong> Some languages (like German) capitalize all nouns; avoid using <code>ToLower</code> in your logic.</li>
+                    <li><strong>Numerical Formatting:</strong> Many European countries use commas <code>,</code> as decimal separators. Let the localization system handle value display automatically.</li>
+                </ul>
+            </section>
+
+            <div class="border-t border-slate-100 pt-8 text-center">
+                <p class="text-slate-600 italic">
+                    Localization is more than just translation; it is an act of respect for global players. Master it, and your UI earns its ticket to the world stage.
+                </p>
+            </div>
+
+        </article>
+
+    </main>
+
+</body>
+</html>

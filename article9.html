@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Immersive Diegetic UI Design | UE5 Dev Blog</title>
+    <meta name="description" content="Learn how to build immersive diegetic UI in UE5: From 3D Widget interaction to spatial material expression, breaking the fourth wall.">
+    
+    <script src="https://cdn.tailwindcss.com/"></script>
+    
+    <style>
+        :root { font-size: 16px; } 
+        /* Strictly maintaining the visual DNA of article2.html */
+        body { 
+            background-color: #f8fafc; 
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        }
+    </style>
+</head>
+<body class="p-4 text-slate-800">
+
+    <main class="max-w-4xl mx-auto space-y-6 pb-12 pt-4">
+        
+        <nav class="flex justify-between items-center px-2">
+            <a href="article.html" class="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back
+            </a>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">UE5 Dev Blog</h1>
+        </nav>
+
+        <article class="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm space-y-12">
+            
+            <header class="space-y-4 border-b border-slate-100 pb-8 text-center">
+                <div class="inline-block bg-amber-50 text-amber-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">Unreal Engine 5 / Immersive UI</div>
+                <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">Breaking the Fourth Wall:<br>Architecting Diegetic UI in Unreal Engine</h1>
+                <div class="flex items-center justify-center gap-3 text-slate-500 text-sm mt-6">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix" alt="Author" class="w-10 h-10 rounded-full bg-slate-100">
+                    <div class="text-left">
+                        <div class="font-bold text-slate-700">Felix / UI Technical Artist</div>
+                        <div>Published Apr 9, 2026</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="space-y-4">
+                <p class="text-xl text-slate-600 font-medium leading-relaxed">
+                    In experiences striving for ultimate immersion, traditional 2D Screen-Space HUDs often shatter the player's "sense of presence." <strong>Diegetic UI</strong> solves this by placing the interface directly within the 3D world—as wrist-mounted terminals, holographic projections, or in-world devices—effectively blurring the line between game logic and the virtual environment.
+                </p>
+            </section>
+
+            <section class="space-y-6">
+                <h2 class="text-2xl font-black text-slate-800">Phase 1: The Widget Interaction Component</h2>
+                <p class="text-slate-600 text-sm leading-relaxed">To make a 3D Widget interactive, the key lies in the <strong>Widget Interaction Component</strong>. It acts as a virtual pointer operating within the 3D space.</p>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-4">
+                    <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Setup Checklist:</h4>
+                    <ul class="space-y-4 text-sm text-slate-700">
+                        <li class="flex items-start gap-4">
+                            <span class="bg-amber-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] shrink-0 mt-0.5">01</span>
+                            <div>
+                                <strong>Component Integration:</strong> Add a <code>Widget Interaction</code> component to your Character or Pawn, attaching it to the camera or hand socket.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="bg-amber-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] shrink-0 mt-0.5">02</span>
+                            <div>
+                                <strong>Input Routing:</strong> Call <code>Press Pointer Key</code> during input events. Note: 3D Widgets typically respond to Left Mouse Button actions, even if triggered via a gamepad or VR controller.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <h2 class="text-2xl font-black text-slate-800">Phase 2: Visual Fidelity & Color Accuracy</h2>
+                <p class="text-slate-600 leading-relaxed">UI in 3D space is subject to lighting, exposure, and tonemapping. Special material logic is required to maintain clarity and color consistency.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 bg-amber-50 flex items-center justify-center rounded-xl font-bold text-amber-500">A</div>
+                        <h3 class="text-xl font-black text-slate-900">Bypassing ACES Tonemapping</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">As discussed in previous articles, setting the Material Domain to <strong>User Interface</strong> ensures your UI colors bypass cinematic tonemapping, keeping brand colors vibrant and accurate.</p>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 bg-orange-50 flex items-center justify-center rounded-xl font-bold text-orange-500">B</div>
+                        <h3 class="text-xl font-black text-slate-900">Holographic Materials</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">Using <code>SceneTexture: SceneDepth</code> combined with UI textures allows for "slicing" effects when the UI intersects with 3D objects, enhancing the holographic feel.</p>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg text-sm text-amber-800">
+                    <strong>⚠️ Immersion Secret:</strong> Feedback should not be purely visual. In Diegetic UI, <strong>Haptics</strong> and <strong>Spatial Audio</strong> are vital. Triggering a subtle vibration and a location-based audio cue when the pointer hovers over a 3D button significantly increases the tactile reality of the interaction.
+                </div>
+            </section>
+
+            <section class="space-y-6 mt-8">
+                <h2 class="text-2xl font-black text-slate-800">Phase 3: Logic Implementation for 3D Widgets</h2>
+                <p class="text-slate-600 text-sm leading-relaxed">When handling 3D Widget interaction in Blueprints, trace distance and frequency must be optimized for performance and feel.</p>
+                
+                <div class="bg-[#0f172a] text-[#38bdf8] p-6 rounded-xl font-mono text-sm overflow-x-auto shadow-inner leading-relaxed">
+<pre><code>// Critical Widget Interaction Settings:
+1. Interaction Distance: Set a realistic range (e.g., 200 units).
+2. Interaction Source: Typically 'World' for raycast-based detection.
+3. Enable Hit Testing: Ensure the UI intercepts the trace to prevent "click-through."</code></pre>
+                </div>
+            </section>
+
+            <section class="space-y-4 border-t border-slate-100 pt-8">
+                <h2 class="text-2xl font-black text-slate-800">Golden Rules for Diegetic UI</h2>
+                <ul class="list-disc pl-6 space-y-2 text-slate-600">
+                    <li><strong>Ergonomics First:</strong> Position 3D UI within the player's natural line of sight to avoid neck strain or eye fatigue.</li>
+                    <li><strong>Emissive Management:</strong> Keep <code>Emissive</code> intensity balanced; excessive values in HDR environments will cause Bloom to blur your UI text.</li>
+                    <li><strong>Respect Occlusion:</strong> UI that is never occluded by hands or environment objects feels "stuck" to the retina, breaking the sense of space.</li>
+                </ul>
+            </section>
+
+            <div class="border-t border-slate-100 pt-8 text-center">
+                <p class="text-slate-600 italic">
+                    When the UI becomes part of the world, interaction is no longer a barrier—it becomes part of the story.
+                </p>
+            </div>
+
+        </article>
+
+    </main>
+
+</body>
+</html>

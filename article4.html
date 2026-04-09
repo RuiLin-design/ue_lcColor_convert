@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Data-Driven Excellence: UE5 MVVM Architecture | UE5 Dev Blog</title>
+    <meta name="description" content="Learn how to implement the MVVM pattern in Unreal Engine 5 to decouple UI logic from data, improving maintainability and performance.">
+    
+    <script src="https://cdn.tailwindcss.com/"></script>
+    
+    <style>
+        :root { font-size: 16px; } 
+        /* Strictly maintaining the visual DNA of article2.html */
+        body { 
+            background-color: #f8fafc; 
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        }
+    </style>
+</head>
+<body class="p-4 text-slate-800">
+
+    <main class="max-w-4xl mx-auto space-y-6 pb-12 pt-4">
+        
+        <nav class="flex justify-between items-center px-2">
+            <a href="article.html" class="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back
+            </a>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">UE5 Dev Blog</h1>
+        </nav>
+
+        <article class="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm space-y-12">
+            
+            <header class="space-y-4 border-b border-slate-100 pb-8 text-center">
+                <div class="inline-block bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">Unreal Engine 5 / MVVM Pattern</div>
+                <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">The Art of Data-Driving:<br>Implementing MVVM in UE5</h1>
+                <div class="flex items-center justify-center gap-3 text-slate-500 text-sm mt-6">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix" alt="Author" class="w-10 h-10 rounded-full bg-slate-100">
+                    <div class="text-left">
+                        <div class="font-bold text-slate-700">Felix / UI Technical Artist</div>
+                        <div>Published Apr 9, 2026</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="space-y-4">
+                <p class="text-xl text-slate-600 font-medium leading-relaxed">
+                    If you are still updating health bars or gold counts using "Property Binding" inside the UMG <code>Tick</code> event, you are wasting valuable performance overhead. The <strong>MVVM (Model-View-ViewModel)</strong> plugin introduced in UE5 provides an event-driven, fully decoupled solution, allowing for a clean separation between "Game Data" and "Visual Representation."
+                </p>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-2xl font-black text-slate-800">Deconstructing MVVM: Three Lines of Defense</h2>
+                <p class="text-slate-600 leading-relaxed">The core of the MVVM architecture is dividing the UI into three distinct responsibilities, preventing the "Spaghetti Code" trap common in traditional UMG development:</p>
+                
+                <div class="grid md:grid-cols-3 gap-6 mt-6">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <h4 class="font-bold text-slate-900 mb-2">Model (Data)</h4>
+                        <p class="text-xs text-slate-600">Pure game data—player stats, inventory arrays, or world states. It has zero awareness of the UI's existence.</p>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <h4 class="font-bold text-slate-900 mb-2">ViewModel (Logic)</h4>
+                        <p class="text-xs text-slate-600">The "Translator." It listens for data changes and converts them into UI-friendly formats (e.g., floats into percentage strings).</p>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <h4 class="font-bold text-slate-900 mb-2">View (Visual)</h4>
+                        <p class="text-xs text-slate-600">Your UMG Assets. The View only cares about "binding" itself to variables exposed by the ViewModel.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-6 mt-8">
+                <h2 class="text-2xl font-black text-slate-800">Practical: Building a High-Performance Health System</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    In the MVVM pattern, the UI no longer "polls" for data. Instead, the ViewModel "notifies" the UI only when the data actually changes.
+                </p>
+                
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">Step 1: Creating the ViewModel Class</h3>
+                    <p class="text-slate-600 leading-relaxed">Create a Blueprint or C++ class inheriting from <code>MVVMViewModelBase</code>. This is the brain of your UI logic.</p>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-3">
+                        <ul class="list-decimal pl-5 space-y-2 text-slate-700 font-medium">
+                            <li>Add a variable named <code>CurrentHealth</code>.</li>
+                            <li>Enable <strong>Field Notify</strong> for the variable. This is the "sensor" that allows the MVVM system to detect changes.</li>
+                            <li>Write logic: When the health in your Model changes, update this variable to broadcast the notification.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">Step 2: Establishing Agnostic Bindings</h3>
+                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg text-sm text-amber-800">
+                        <strong>⚠️ Architect's Secret:</strong> Never reference specific Widgets inside your ViewModel. The ViewModel should be "Agnostic." This allows the same ViewModel to drive your Main HUD, Party List, and Floating Health Bars simultaneously, achieving perfect logic reuse.
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">Step 3: Configuring the Binding Map</h3>
+                    <p class="text-slate-600 leading-relaxed">Inside the UMG MVVM panel, link the ViewModel's variables to the Progress Bar's 'Percent' property.</p>
+                    <div class="bg-[#0f172a] text-[#38bdf8] p-4 rounded-xl font-mono text-sm overflow-x-auto shadow-inner">
+<pre><code>// Example Binding Configuration:
+1. Source: MyPlayerViewModel -> HealthRatio (Range 0.0 - 1.0)
+2. Destination: HealthProgressBar -> SetPercent
+3. Update Mode: One Way to Destination
+4. Trigger: On Property Changed (Field Notify)</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-2xl font-black text-slate-800">Why Does This Make Your UI Faster?</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    Standard UMG property bindings are essentially function calls executed every single frame. MVVM, however, is <strong>on-demand</strong>:
+                </p>
+                <ul class="list-disc pl-6 space-y-2 text-slate-600">
+                    <li><strong>Elimination of Tick Dependencies:</strong> Redraws only occur when <code>SetVariable</code> is executed and the value has actually changed.</li>
+                    <li><strong>Low-Cost Synchronization:</strong> In multiplayer games, the ViewModel serves as a perfect buffer between server-side replication and client-side presentation.</li>
+                </ul>
+            </section>
+
+            <section class="space-y-4 border-t border-slate-100 pt-8">
+                <h2 class="text-2xl font-black text-slate-800">The Golden Rules of MVVM Development</h2>
+                <ul class="list-disc pl-6 space-y-2 text-slate-600">
+                    <li><strong>Unidirectional Flow:</strong> Keep the flow from Model -> ViewModel -> View clear to avoid circular dependency hell.</li>
+                    <li><strong>Sink the Logic:</strong> Put all mathematical calculations (e.g., Level-to-EXP ratio) inside the ViewModel to keep your UMG Designer clean.</li>
+                    <li><strong>Field Notify Integrity:</strong> Always ensure that every variable intended for UI response has Field Notify properly enabled.</li>
+                </ul>
+            </section>
+
+            <div class="border-t border-slate-100 pt-8 text-center">
+                <p class="text-slate-600 italic">
+                    Introducing MVVM to your UI project is more than just a technical upgrade; it is a fundamental shift from "procedural" to "reactive" development.
+                </p>
+            </div>
+
+        </article>
+
+    </main>
+
+</body>
+</html>

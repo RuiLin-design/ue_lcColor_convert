@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Mastering UI Performance Optimization | UE5 Dev Blog</title>
+    <meta name="description" content="Learn deep optimization techniques for Unreal Engine UI: From texture atlasing to invalidation caching, push your UI performance to the absolute limit.">
+    
+    <script src="https://cdn.tailwindcss.com/"></script>
+    
+    <style>
+        :root { font-size: 16px; } 
+        /* Strictly maintaining the visual DNA of article2.html */
+        body { 
+            background-color: #f8fafc; 
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        }
+    </style>
+</head>
+<body class="p-4 text-slate-800">
+
+    <main class="max-w-4xl mx-auto space-y-6 pb-12 pt-4">
+        
+        <nav class="flex justify-between items-center px-2">
+            <a href="article.html" class="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back
+            </a>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">UE5 Dev Blog</h1>
+        </nav>
+
+        <article class="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm space-y-12">
+            
+            <header class="space-y-4 border-b border-slate-100 pb-8 text-center">
+                <div class="inline-block bg-cyan-50 text-cyan-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">Unreal Engine 5 / Optimization</div>
+                <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">Beyond Visuals:<br>Pushing UI Rendering to the Absolute Limit</h1>
+                <div class="flex items-center justify-center gap-3 text-slate-500 text-sm mt-6">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix" alt="Author" class="w-10 h-10 rounded-full bg-slate-100">
+                    <div class="text-left">
+                        <div class="font-bold text-slate-700">Felix / UI Technical Artist</div>
+                        <div>Published Apr 9, 2026</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="space-y-4">
+                <p class="text-xl text-slate-600 font-medium leading-relaxed">
+                    Beautiful UI is only the beginning; buttery-smooth UI is the hallmark of a commercial-grade project. In Unreal Engine, the Slate renderer traverses all widgets every frame. Without proper management, UI can easily devour over 30% of your total frame time. This guide explores how to leverage <strong>Texture Atlasing</strong> and <strong>Invalidation Boxes</strong> to crush hundreds of Draw Calls down to single digits.
+                </p>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-2xl font-black text-slate-800">What are Draw Calls? Why do they kill your FPS?</h2>
+                <p class="text-slate-600 leading-relaxed">Every independent texture, font, or material submitted for rendering generates a Draw Call. If an inventory contains 100 unique icons, the engine may default to 100 draw calls—a massive bottleneck for the CPU.</p>
+                <div class="grid md:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-red-50 p-6 rounded-2xl border border-red-100">
+                        <h4 class="font-bold text-red-900 mb-2">Unoptimized State</h4>
+                        <p class="text-xs text-red-700">100 independent textures = 100 Draw Calls. A performance nightmare for mobile devices.</p>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-2xl border border-green-100">
+                        <h4 class="font-bold text-green-900 mb-2">Optimized State</h4>
+                        <p class="text-xs text-green-700">1 Texture Atlas = 1 Draw Call. Stays lightning fast and efficient.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-10 mt-8">
+                <h2 class="text-2xl font-black text-slate-800">Optimization: Step-by-Step Workflow</h2>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-cyan-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+                        Merging Atlases with Sprite Actions
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">This is the most critical step for novices. Atlasing allows the engine to process batches of icons in a single pass.</p>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-3">
+                        <ul class="list-decimal pl-5 text-sm text-slate-700 space-y-2 font-medium">
+                            <li>Select all icon textures in the Content Browser, right-click and select <strong>Sprite Actions -> Create Sprite</strong>.</li>
+                            <li>Right-click the newly created Sprites and select <strong>Create Paper2D Texture Group</strong>.</li>
+                            <li>The engine will automatically pack these scattered images into a single large texture sheet. Now, rendering those 100 icons requires exactly 1 Draw Call.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-cyan-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
+                        Utilizing the Invalidation Box
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">If your UI is static (like a Main Menu), why force the engine to recalculate its layout every frame?</p>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                        <p class="font-bold text-xs uppercase text-slate-400 mb-3">Setup & Configuration Guide:</p>
+                        <ul class="space-y-3 text-sm text-slate-700">
+                            <li>In the UMG Hierarchy, wrap your interface in an <strong>Invalidation Box</strong>.</li>
+                            <li>In the Details panel, check <strong>Cache Relative Transforms</strong>.</li>
+                            <li><strong>How it works:</strong> As long as the content inside the box doesn't change, the engine reuses the previous frame's cached result, skipping the expensive Prepass and Paint logic.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">💡 The Expert's Core Secret</h3>
+                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg text-sm text-amber-800">
+                        <strong>⚠️ The Invalidation Trap:</strong> Many beginners place their entire HUD into an Invalidation Box and wonder why the health bar stops moving. The box "locks" the state. If a widget needs to update, you must call the <code>Invalidate</code> node manually to tell the box: "Something changed, please redraw this."
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">Performance Debug Tools</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Don't guess; measure. Use built-in engine commands to find the truth:</p>
+                    <div class="bg-[#0f172a] text-[#38bdf8] p-4 rounded-xl font-mono text-sm overflow-x-auto shadow-inner">
+<pre><code>// Enter these in the console (~) :
+Stat Slate (Monitor overall UI overhead)
+Slate.InvalidationDebugging 1 (Enable visual debugging for Invalidation Boxes)
+// Note: Green widgets are cached; frequent red flashes indicate invalidation overhead.</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-4 border-t border-slate-100 pt-8">
+                <h2 class="text-2xl font-black text-slate-800">Golden Rules of UI Optimization</h2>
+                <ul class="list-disc pl-6 space-y-2 text-slate-600">
+                    <li><strong>Eliminate Overdraw:</strong> Minimize overlapping UI layers. Rendering a base image covered by three full-screen translucent layers is a waste of GPU cycles.</li>
+                    <li><strong>Caution with Background Blur:</strong> Blur materials are incredibly expensive. When possible, use pre-rendered blurred textures instead of real-time calculations.</li>
+                    <li><strong>Strategic Atlasing:</strong> Keep resources for the same screen in one atlas, but separate resources for different screens.</li>
+                </ul>
+            </section>
+
+            <div class="border-t border-slate-100 pt-8 text-center">
+                <p class="text-slate-600 italic">
+                    True UI mastery isn't just about stunning visuals—it's about ensuring those visuals never cost a single frame.
+                </p>
+            </div>
+
+        </article>
+
+    </main>
+
+</body>
+</html>

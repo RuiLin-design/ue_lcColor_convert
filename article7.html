@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>The Geometry of Emotion: Advanced UI Motion | UE5 Dev Blog</title>
+    <meta name="description" content="Master UMG motion design: From curve interpolation to staggered layout orchestration and performance-aware transitions.">
+    
+    <script src="https://cdn.tailwindcss.com/"></script>
+    
+    <style>
+        :root { font-size: 16px; } 
+        /* Strictly maintaining the visual DNA of article2.html */
+        body { 
+            background-color: #f8fafc; 
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        }
+
+        /* Large-scale sweeping animations for side-by-side comparison */
+        @keyframes sweep-linear {
+            0% { left: 0%; }
+            50% { left: calc(100% - 3rem); }
+            100% { left: 0%; }
+        }
+        @keyframes sweep-cubic {
+            0% { left: 0%; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+            50% { left: calc(100% - 3rem); animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+            100% { left: 0%; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+        }
+        .animate-sweep-linear { position: absolute; animation: sweep-linear 2.5s infinite linear; }
+        .animate-sweep-cubic { position: absolute; animation: sweep-cubic 2.5s infinite; }
+    </style>
+</head>
+<body class="p-4 text-slate-800">
+
+    <main class="max-w-4xl mx-auto space-y-6 pb-12 pt-4">
+        
+        <nav class="flex justify-between items-center px-2">
+            <a href="article.html" class="flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back
+            </a>
+            <h1 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">UE5 Dev Blog</h1>
+        </nav>
+
+        <article class="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm space-y-12">
+            
+            <header class="space-y-4 border-b border-slate-100 pb-8 text-center">
+                <div class="inline-block bg-violet-50 text-violet-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">Unreal Engine 5 / Motion Design</div>
+                <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">The Geometry of Emotion:<br>Injecting "Juice" into Your UI</h1>
+                <div class="flex items-center justify-center gap-3 text-slate-500 text-sm mt-6">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix" alt="Author" class="w-10 h-10 rounded-full bg-slate-100">
+                    <div class="text-left">
+                        <div class="font-bold text-slate-700">Felix / UI Technical Artist</div>
+                        <div>Published Apr 9, 2026</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="space-y-4">
+                <p class="text-xl text-slate-600 font-medium leading-relaxed">
+                    In high-end UI development, movement alone is a utility; but <strong>Motion Design</strong> is a narrative. A stiff menu feels like a system error, while an interface that breathes with <strong>Physical Momentum</strong> and <strong>Spatial Awareness</strong> builds immediate trust with the player.
+                </p>
+            </section>
+
+            <section class="space-y-6 bg-slate-50 p-6 md:p-10 rounded-3xl border border-slate-100">
+                <h2 class="text-2xl font-black text-slate-800">Visual Perception: Linear vs. Cubic</h2>
+                <p class="text-sm text-slate-500 italic">Observe how Cubic Easing handles long-distance travel by simulating momentum, making the stop feel "intentional" rather than "abrupt":</p>
+                
+                <div class="space-y-10 py-6">
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                            <span>Traditional Linear (Mechanical)</span>
+                            <span>Unnatural Constant Speed</span>
+                        </div>
+                        <div class="h-6 bg-slate-200 rounded-full p-1 relative overflow-hidden">
+                            <div class="h-4 w-12 bg-slate-400 rounded-full animate-sweep-linear"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-violet-500">
+                            <span>Professional Cubic (Physical)</span>
+                            <span>Natural Acceleration & Friction</span>
+                        </div>
+                        <div class="h-6 bg-violet-100 rounded-full p-1 relative overflow-hidden">
+                            <div class="h-4 w-12 bg-violet-500 rounded-full animate-sweep-cubic shadow-[0_0_15px_rgba(139,92,246,0.5)]"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-10">
+                <h2 class="text-2xl font-black text-slate-800">Phase 1: Precision Keyframing</h2>
+                
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-violet-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+                        The "Pop-In" Foundation
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">In the UMG Animations tab, create a new sequence called <code>Anim_Menu_Intro</code>.</p>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2 font-medium">
+                            <li><strong>Render Transform:</strong> Set initial Scale X/Y to <code>0.0</code> and final to <code>1.0</code>.</li>
+                            <li><strong>Color & Opacity:</strong> Transition from Alpha <code>0</code> to <code>1</code> to prevent sudden pop-ins.</li>
+                            <li><strong>Curve Adjustment:</strong> Right-click the last keyframe and select <strong>Interp -> Cubic (Ease Out)</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">💡 The "Interaction Guard" Secret</h3>
+                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg text-sm text-amber-800">
+                        <strong>⚠️ Avoiding Soft-Locks:</strong> Never allow players to interact with a menu while its "Outro" animation is playing. <strong>The Fix:</strong> Always use <code>BindToAnimationFinished</code>. Only after the event fires should you call "Remove from Parent" or enable the "Back" button again.
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-10">
+                <h2 class="text-2xl font-black text-slate-800">Phase 2: Orchestrating Staggered Layouts</h2>
+                <p class="text-slate-600 text-sm leading-relaxed">The most professional UIs don't appear all at once. They use a "cascade" effect where elements reveal themselves in a 0.05s sequence.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <h4 class="font-bold text-slate-900 mb-2 underline decoration-violet-300">The Vertical Cascade</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">When a list opens, the top item should start its animation first, followed by the second item with a slight 0.05s delay. This guides the player's eye from top to bottom.</p>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <h4 class="font-bold text-slate-900 mb-2 underline decoration-violet-300">Dynamic Playback Rates</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">Don't create two animations for "In" and "Out." Use the same animation but set the <strong>Play Mode</strong> to <code>Reverse</code> and double the <strong>Playback Speed</strong> for closing.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-6 mt-8">
+                <h2 class="text-2xl font-black text-slate-800">Phase 3: Material-Driven Transitions</h2>
+                <p class="text-slate-600 text-sm leading-relaxed">Truly advanced motion combines UMG timelines with custom shaders. For example, a "Cyberpunk" UI shouldn't just fade in; it should glitch into existence.</p>
+                
+                <div class="bg-[#0f172a] text-[#38bdf8] p-4 rounded-xl font-mono text-sm overflow-x-auto shadow-inner">
+<pre><code>// Synchronizing Shader Parameters with Timelines:
+1. Add a 'Material Parameter' track in UMG Animation.
+2. Select your UI Material instance.
+3. Keyframe the 'Dissolve' or 'Glow' value from 0.0 to 5.0.
+4. Result: A UI that physically manifests via shader logic.</code></pre>
+                    </div>
+            </section>
+
+            <section class="space-y-4 border-t border-slate-100 pt-8">
+                <h2 class="text-2xl font-black text-slate-800">Motion Design Golden Rules</h2>
+                <ul class="list-disc pl-6 space-y-2 text-slate-600">
+                    <li><strong>Response Time:</strong> Button click feedback must be <strong>≤ 0.1s</strong>. Major transitions should be <strong>≤ 0.35s</strong>.</li>
+                    <li><strong>Secondary Motion:</strong> If a panel slides in, add a tiny "overshoot" or bounce at the end to imply weight and physical presence.</li>
+                    <li><strong>Focus Management:</strong> Use motion to guide the eye. The most important button should be the last thing to finish its entry animation.</li>
+                    <li><strong>Performance Aware:</strong> Avoid animating over 50 widgets simultaneously on mobile; use <strong>Retainer Boxes</strong> to cap the frame rate of background UI.</li>
+                </ul>
+            </section>
+
+            <div class="border-t border-slate-100 pt-8 text-center">
+                <p class="text-slate-600 italic">
+                    In the world of UI, motion is the bridge between a static layout and a living, breathing experience.
+                </p>
+            </div>
+
+        </article>
+
+    </main>
+
+</body>
+</html>
