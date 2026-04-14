@@ -367,8 +367,8 @@ createApp({
             if (type === 'linear') text = enableAlpha.linear ? `(R=${linear.value.r}, G=${linear.value.g}, B=${linear.value.b}, A=${linear.value.a})` : `(R=${linear.value.r}, G=${linear.value.g}, B=${linear.value.b})`;
             else if (type === 'srgb') text = enableAlpha.rgb ? `rgba(${rgb.value.r}, ${rgb.value.g}, ${rgb.value.b}, ${currA.value})` : `rgb(${rgb.value.r}, ${rgb.value.g}, ${rgb.value.b})`;
             else if (type === 'hex') text = enableAlpha.hex ? hexAlphaStr.value : hexStr.value;
-            else if (type === 'hsl') text = enableAlpha.hsl ? `hsla(${Math.round(currH.value)}, ${hsl.value.s}%, ${hsl.value.l}%, ${currA.value})` : `hsl(${Math.round(currH.value)}, ${hsl.value.s}%, ${hsl.value.l}%)`;
-            else if (type === 'hsv') text = enableAlpha.hsv ? `hsva(${Math.round(currH.value)}, ${Math.round(currS.value)}%, ${Math.round(currV.value)}%, ${currA.value})` : `hsv(${Math.round(currH.value)}, ${Math.round(currS.value)}%, ${Math.round(currV.value)}%)`;
+            else if (type === 'hsl') text = enableAlpha.hsl ? `hsla(${Math.round(currH.value)}, ${hsl.value.s}, ${hsl.value.l}, ${currA.value})` : `hsl(${Math.round(currH.value)}, ${hsl.value.s}, ${hsl.value.l})`;
+            else if (type === 'hsv') text = enableAlpha.hsv ? `hsva(${Math.round(currH.value)}, ${Math.round(currS.value)}, ${Math.round(currV.value)}, ${currA.value})` : `hsv(${Math.round(currH.value)}, ${Math.round(currS.value)}, ${Math.round(currV.value)})`;
 
             try {
                 await navigator.clipboard.writeText(text);
